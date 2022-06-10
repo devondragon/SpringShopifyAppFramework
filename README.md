@@ -27,7 +27,9 @@ Shopify's REST API returns many properties which are NOT in their current docume
 The default URLs for your GDPR Webhooks, as required here - https://shopify.dev/apps/webhooks/configuration/mandatory-webhooks are:
 
 $YOUR_APP_HOSTNAME/webhook/gdpr/data-request
+
 $YOUR_APP_HOSTNAME/webhook/gdpr/customer-delete
+
 $YOUR_APP_HOSTNAME/webhook/gdpr/shop-delete
 
 You will need to add actual functionality to each of these Webhook controllers under the com.justblackmagic.shopify.app.controller.webhooks. package.

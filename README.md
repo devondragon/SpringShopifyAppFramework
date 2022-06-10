@@ -1,10 +1,9 @@
-# shopify-test
+# Spring Shopify App Framework
 
 ## Summary
-This Spring Boot and Spring Security based application will provide a platform for building Shopfiy Apps using Java/Spring.  
+This Spring Boot and Spring Security based application provides a platform for building Shopfiy Apps using Java/Spring.  
 
 The planned scope for this project includes:
-
 
 1.  Handling OAuth authentiation/app installation with Shopify  - DONE with minor caveats
 2.  A full Shopify REST API client - Imported https://github.com/ChannelApe/shopify-sdk, although many updates need to be made. Basic functionality works.

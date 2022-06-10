@@ -1,0 +1,74 @@
+<!DOCTYPE HTML>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+<meta charset="UTF-8" />
+<title>App Fragments</title>
+</head>
+<body>
+    <div th:fragment = "pagination" class="Polaris-Page-Header__PaginationWrapper">
+        <nav class="Polaris-Pagination Polaris-Pagination--plain" aria-label="Pagination">
+            <a th:href="${prev}" >
+                <button id="pagination-previous" type="button" class="Polaris-Pagination__Button Polaris-Pagination__PreviousButton" aria-label="Previous">
+                    <span class="Polaris-Icon">
+                        <svg viewBox="0 0 20 20" class="Polaris-Icon__Svg" focusable="false" aria-hidden="true">
+                            <path d="M17 9H5.414l3.293-3.293a.999.999 0 1 0-1.414-1.414l-5 5a.999.999 0 0 0 0 1.414l5 5a.997.997 0 0 0 1.414 0 .999.999 0 0 0 0-1.414L5.414 11H17a1 1 0 1 0 0-2" fill-rule="evenodd"></path>
+                        </svg>
+                    </span>
+                </button>
+            </a>
+            <a th:href="${next}">
+                <button id="pagination-next" type="button" class="Polaris-Pagination__Button Polaris-Pagination__NextButton" aria-label="Next">
+                    <span class="Polaris-Icon">
+                       <svg viewBox="0 0 20 20" class="Polaris-Icon__Svg" focusable="false" aria-hidden="true">
+                        <path d="M17.707 9.293l-5-5a.999.999 0 1 0-1.414 1.414L14.586 9H3a1 1 0 1 0 0 2h11.586l-3.293 3.293a.999.999 0 1 0 1.414 1.414l5-5a.999.999 0 0 0 0-1.414" fill-rule="evenodd"></path>
+                       </svg>
+                    </span>
+                </button>
+            </a>
+        </nav>
+    </div>
+
+    <div th:fragment="breadcrumbs(breadcrumbs)" class="Polaris-Page-Header__BreadcrumbWrapper">
+        <nav role="navigation">
+            <a th:each="crumb:${breadcrumbs}" class="Polaris-Breadcrumbs__Breadcrumb" th:href="${crumb[1]}" data-polaris-unstyled="true">
+                <span class="Polaris-Breadcrumbs__ContentWrapper">
+                    <span class="Polaris-Breadcrumbs__Icon">
+                        <span class="Polaris-Icon">
+                            <svg viewBox="0 0 20 20" class="Polaris-Icon__Svg" focusable="false" aria-hidden="true">
+                                <path d="M12 16a.997.997 0 0 1-.707-.293l-5-5a.999.999 0 0 1 0-1.414l5-5a.999.999 0 1 1 1.414 1.414L8.414 10l4.293 4.293A.999.999 0 0 1 12 16" fill-rule="evenodd"></path>
+                            </svg>
+                        </span>
+                    </span>
+                    <span class="Polaris-Breadcrumbs__Content" th:text="${crumb[0]}"></span>
+                </span>
+            </a>
+        </nav>
+    </div>
+
+    <div th:fragment="additionalNavWrapper" class="Polaris-Page-Header__AdditionalNavigationWrapper"></div>
+
+    <div th:fragment = "footer" class="Polaris-Layout__Section">
+        <div class="Polaris-FooterHelp">
+            <div class="Polaris-FooterHelp__Content">
+                <div class="Polaris-FooterHelp__Icon">
+                   <span class="Polaris-Icon Polaris-Icon--colorTeal Polaris-Icon--hasBackdrop">
+                       <svg class="Polaris-Icon__Svg" viewBox="0 0 20 20">
+                           <g fill-rule="evenodd">
+                            <path d="M6 4.038a2 2 0 1 0-3.999-.001A2 2 0 0 0 6 4.038zm2 0c0 2.21-1.79 4-4 4s-4-1.79-4-4 1.79-4 4-4 4 1.79 4 4zM18 4a2 2 0 1 0-3.999-.001A2 2 0 0 0 18 4zm2 0c0 2.21-1.79 4-4 4s-4-1.79-4-4 1.79-4 4-4 4 1.79 4 4zm-2 12a2 2 0 1 0-3.999-.001A2 2 0 0 0 18 16zm2 0c0 2.21-1.79 4-4 4s-4-1.79-4-4 1.79-4 4-4 4 1.79 4 4zm-14 .038a2 2 0 1 0-3.999-.001A2 2 0 0 0 6 16.038zm2 0c0 2.21-1.79 4-4 4s-4-1.79-4-4 1.79-4 4-4 4 1.79 4 4z" fill-rule="nonzero"></path>
+                            <path d="M18 10.038a8 8 0 1 1-16 0 8 8 0 0 1 16 0zM10 14c2.21 0 4-1.79 4-4s-1.79-4-4-4-4 1.79-4 4 1.79 4 4 4z" fill="currentColor"></path>
+                            <path d="M17 10.038a7 7 0 1 0-14 0 7 7 0 0 0 14 0zm2 0a9 9 0 1 1-18.001-.001A9 9 0 0 1 19 10.038z" fill-rule="nonzero"></path>
+                            <path d="M13 10.038a3 3 0 1 0-6 0 3 3 0 0 0 6 0zm2 0c0 2.76-2.24 5-5 5s-5-2.24-5-5 2.24-5 5-5 5 2.24 5 5z" fill-rule="nonzero"></path>
+                            <path d="M13.707 7.707l2-2a1 1 0 0 0-1.414-1.414l-2 2a1 1 0 0 0 1.414 1.414zm-1.414 6l2 2a1 1 0 0 0 1.414-1.414l-2-2a1 1 0 0 0-1.414 1.414zM7.707 6.33l-2-2a1 1 0 0 0-1.414 1.415l2 2a1 1 0 0 0 1.414-1.414zm-1.414 6l-2 2a1 1 0 0 0 1.414 1.415l2-2a1 1 0 0 0-1.414-1.414z" fill-rule="nonzero"></path>
+                           </g>
+                        </svg>
+                    </span>
+                </div>
+                <div class="Polaris-FooterHelp__Text">
+                    <span th:text="${footerText}">For more details on Polaris, visit our <a class="Polaris-Link" href="https://polaris.shopify.com" data-polaris-unstyled="true">style guide</a>. </span>
+                </div>
+            </div>
+        </div>
+    </div>
+
+</body>
+</html>

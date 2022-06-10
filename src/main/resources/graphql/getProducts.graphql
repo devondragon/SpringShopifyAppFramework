@@ -1,0 +1,11 @@
+{
+  products(first: 50, reverse: true) {
+    edges {
+      node {
+        id
+        title
+        handle
+      }
+    }
+  }
+}

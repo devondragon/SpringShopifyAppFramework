@@ -1,0 +1,378 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org" th:replace="~{layout/layout :: main-fragment(  
+                                                ~{::title},
+                                                ~{:: #static-resources},
+                                                ~{:: #dash-nav},
+                                                ~{:: #dash-header},
+                                                ~{:: #dash-main-content},  
+                                                ~{:: #dash-footer}
+                                               )}">
+
+<head>
+	<meta charset="UTF-8" />
+	<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+	<meta http-equiv="X-UA-Compatible" content="ie=edge" />
+	<title>Products</title>
+	<th:block id="static-resources">
+		<!--add any additional static resource includes here -->
+
+	</th:block>
+</head>
+
+<body>
+	<!-- this is the upper navigation in the header section-->
+	<div id="dash-nav" class="Polaris-Page-Header__Navigation">
+		<div id="breadcrumbs" th:replace="~{fragments/app-fragments :: breadcrumbs(breadcrumbs=${ {{'home', '/dash'},{'products','/products'}}})}">
+		</div>
+		<div id="additionalNavWrapper" th:replace="~{fragments/app-fragments :: additionalNavWrapper}"></div>
+		<div id="pagination" th:replace="~{fragments/app-fragments :: pagination(prev = '#', next='#')}"></div>
+	</div>
+
+	<!-- Any content you want in the header section below the title-->
+	<div id="dash-header">
+		<h1 class="Polaris-DisplayText Polaris-DisplayText--sizeLarge">
+			Products
+		</h1>
+	</div>
+
+	<!-- Primary content with some examples for styles-->
+	<div id="dash-main-content">
+		<div class="Polaris-Layout__AnnotatedSection">
+			<div class="Polaris-Layout__AnnotationWrapper">
+				<div class="Polaris-Layout__Annotation">
+					<div class="Polaris-TextContainer">
+						<h2 class="Polaris-Heading">Product List</h2>
+						<p>All your products (<span th:text="${products.size}" />)</p>
+					</div>
+				</div>
+				<div class="Polaris-Layout__AnnotationContent">
+					<div>
+						<div class="Polaris-Card">
+							<div class="Polaris-ResourceList__ResourceListWrapper">
+								<div class="Polaris-ResourceList__FiltersWrapper">
+									<div class="Polaris-Filters">
+										<div class="Polaris-Filters-ConnectedFilterControl__ProxyButtonContainer" aria-hidden="true">
+											<div data-key="taggedWith3"><button class="Polaris-Button" type="button"><span
+														class="Polaris-Button__Content"><span class="Polaris-Button__Text">Tagged with</span><span
+															class="Polaris-Button__Icon">
+															<div class=""><span class="Polaris-Icon"><span class="Polaris-VisuallyHidden"></span><svg
+																		viewBox="0 0 20 20" class="Polaris-Icon__Svg" focusable="false"
+																		aria-hidden="true">
+																		<path
+																			d="M13.098 8H6.902c-.751 0-1.172.754-.708 1.268L9.292 12.7c.36.399 1.055.399 1.416 0l3.098-3.433C14.27 8.754 13.849 8 13.098 8z">
+																		</path>
+																	</svg></span></div>
+														</span></span></button></div>
+										</div>
+										<div class="Polaris-Filters-ConnectedFilterControl__Wrapper">
+											<div class="Polaris-Filters-ConnectedFilterControl Polaris-Filters-ConnectedFilterControl--right">
+												<div class="Polaris-Filters-ConnectedFilterControl__CenterContainer">
+													<div class="Polaris-Filters-ConnectedFilterControl__Item">
+														<div class="Polaris-Labelled--hidden">
+															<div class="Polaris-Labelled__LabelWrapper">
+																<div class="Polaris-Label"><label id="PolarisTextField4Label" for="PolarisTextField4"
+																		class="Polaris-Label__Text">Filter Products</label></div>
+															</div>
+															<div class="Polaris-Connected">
+																<div class="Polaris-Connected__Item Polaris-Connected__Item--primary">
+																	<div class="Polaris-TextField">
+																		<div class="Polaris-TextField__Prefix" id="PolarisTextField4Prefix"><span
+																				class="Polaris-Filters__SearchIcon"><span class="Polaris-Icon"><span
+																						class="Polaris-VisuallyHidden"></span><svg viewBox="0 0 20 20"
+																						class="Polaris-Icon__Svg" focusable="false"
+																						aria-hidden="true">
+																						<path
+																							d="M8 12a4 4 0 1 1 0-8 4 4 0 0 1 0 8zm9.707 4.293-4.82-4.82A5.968 5.968 0 0 0 14 8 6 6 0 0 0 2 8a6 6 0 0 0 6 6 5.968 5.968 0 0 0 3.473-1.113l4.82 4.82a.997.997 0 0 0 1.414 0 .999.999 0 0 0 0-1.414z">
+																						</path>
+																					</svg></span></span></div><input id="PolarisTextField4"
+																			placeholder="Filter customers" autocomplete="off"
+																			class="Polaris-TextField__Input Polaris-TextField__Input--hasClearButton"
+																			aria-labelledby="PolarisTextField4Label PolarisTextField4Prefix"
+																			aria-invalid="false" value=""><button type="button"
+																			class="Polaris-TextField__ClearButton Polaris-TextField__Hidden"><span
+																				class="Polaris-VisuallyHidden">Clear</span><span
+																				class="Polaris-Icon Polaris-Icon--colorBase Polaris-Icon--applyColor"><span
+																					class="Polaris-VisuallyHidden"></span><svg viewBox="0 0 20 20"
+																					class="Polaris-Icon__Svg" focusable="false" aria-hidden="true">
+																					<path fill-rule="evenodd"
+																						d="M10 2a8 8 0 1 0 0 16 8 8 0 0 0 0-16zM7.707 6.293a1 1 0 0 0-1.414 1.414L8.586 10l-2.293 2.293a1 1 0 1 0 1.414 1.414L10 11.414l2.293 2.293a1 1 0 1 0 1.414-1.414L11.414 10l2.293-2.293a1 1 0 0 0-1.414-1.414L10 8.586 7.707 6.293z">
+																					</path>
+																				</svg></span></button>
+																		<div class="Polaris-TextField__Backdrop"></div>
+																	</div>
+																</div>
+															</div>
+														</div>
+													</div>
+												</div>
+												<div
+													class="Polaris-Filters-ConnectedFilterControl__RightContainer Polaris-Filters-ConnectedFilterControl__RightContainerWithoutMoreFilters">
+													<div class="Polaris-Filters-ConnectedFilterControl__Item">
+														<div><button id="Activator-taggedWith3" class="Polaris-Button" type="button" tabindex="0"
+																aria-controls="Polarispopover6" aria-owns="Polarispopover6"
+																aria-expanded="false"><span class="Polaris-Button__Content"><span
+																		class="Polaris-Button__Text">Tagged with</span><span
+																		class="Polaris-Button__Icon">
+																		<div class=""><span class="Polaris-Icon"><span
+																					class="Polaris-VisuallyHidden"></span><svg viewBox="0 0 20 20"
+																					class="Polaris-Icon__Svg" focusable="false" aria-hidden="true">
+																					<path
+																						d="M13.098 8H6.902c-.751 0-1.172.754-.708 1.268L9.292 12.7c.36.399 1.055.399 1.416 0l3.098-3.433C14.27 8.754 13.849 8 13.098 8z">
+																					</path>
+																				</svg></span></div>
+																	</span></span></button></div>
+													</div>
+												</div>
+												<div class="Polaris-Filters-ConnectedFilterControl__MoreFiltersButtonContainer"></div>
+											</div>
+											<div class="Polaris-Filters-ConnectedFilterControl__AuxiliaryContainer">
+												<div style="padding-left: 8px;"><button class="Polaris-Button" type="button"><span
+															class="Polaris-Button__Content"><span
+																class="Polaris-Button__Text">Save</span></span></button></div>
+											</div>
+										</div>
+										<div class="Polaris-Filters__TagsContainer" aria-live="polite"><span
+												class="Polaris-Tag Polaris-Tag--removable"><span title="Tagged with VIP"
+													class="Polaris-Tag__TagText">Tagged with VIP</span><button type="button"
+													aria-label="Remove Tagged with VIP" class="Polaris-Tag__Button"><span class="Polaris-Icon"><span
+															class="Polaris-VisuallyHidden"></span><svg viewBox="0 0 20 20" class="Polaris-Icon__Svg"
+															focusable="false" aria-hidden="true">
+															<path
+																d="m11.414 10 4.293-4.293a.999.999 0 1 0-1.414-1.414L10 8.586 5.707 4.293a.999.999 0 1 0-1.414 1.414L8.586 10l-4.293 4.293a.999.999 0 1 0 1.414 1.414L10 11.414l4.293 4.293a.997.997 0 0 0 1.414 0 .999.999 0 0 0 0-1.414L11.414 10z">
+															</path>
+														</svg></span></button></span></div>
+									</div>
+								</div>
+								<div class="Polaris-ResourceList__HeaderOuterWrapper">
+									<div>
+										<div></div>
+										<div>
+											<div
+												class="Polaris-ResourceList__HeaderWrapper Polaris-ResourceList__HeaderWrapper--hasSort Polaris-ResourceList__HeaderWrapper--hasSelect">
+												<div class="Polaris-ResourceList__HeaderContentWrapper">
+													<div class="Polaris-ResourceList__HeaderTitleWrapper">Showing <span th:text="${products.size}" />
+														Products</div>
+													<div class="Polaris-ResourceList__CheckableButtonWrapper">
+														<div class="Polaris-CheckableButton Polaris-CheckableButton__CheckableButton--plain">
+															<div class="Polaris-CheckableButton__Checkbox"><label
+																	class="Polaris-Choice Polaris-Choice--labelHidden" for="PolarisCheckbox1"><span
+																		class="Polaris-Choice__Control"><span class="Polaris-Checkbox"><input
+																				id="PolarisCheckbox1" type="checkbox" class="Polaris-Checkbox__Input"
+																				aria-invalid="false" role="checkbox" aria-checked="false"
+																				value=""><span class="Polaris-Checkbox__Backdrop"></span><span
+																				class="Polaris-Checkbox__Icon"><span class="Polaris-Icon"><span
+																						class="Polaris-VisuallyHidden"></span><svg viewBox="0 0 20 20"
+																						class="Polaris-Icon__Svg" focusable="false"
+																						aria-hidden="true">
+																						<path
+																							d="m8.315 13.859-3.182-3.417a.506.506 0 0 1 0-.684l.643-.683a.437.437 0 0 1 .642 0l2.22 2.393 4.942-5.327a.436.436 0 0 1 .643 0l.643.684a.504.504 0 0 1 0 .683l-5.91 6.35a.437.437 0 0 1-.642 0">
+																						</path>
+																					</svg></span></span></span></span><span
+																		class="Polaris-Choice__Label">Select all <span th:text="${products.size}" />
+																		Products</span></label></div><span
+																class="Polaris-CheckableButton__Label">Showing <span th:text="${products.size}" />
+																Products</span>
+														</div>
+													</div>
+													<div class="Polaris-ResourceList__SortWrapper">
+														<div class="Polaris-Labelled--hidden">
+															<div class="Polaris-Labelled__LabelWrapper">
+																<div class="Polaris-Label"><label id="PolarisSelect1Label" for="PolarisSelect1"
+																		class="Polaris-Label__Text">Sort by</label></div>
+															</div>
+															<div class="Polaris-Select"><select id="PolarisSelect1" class="Polaris-Select__Input"
+																	aria-invalid="false">
+																	<option value="DATE_MODIFIED_DESC">Newest update</option>
+																	<option value="DATE_MODIFIED_ASC">Oldest update</option>
+																</select>
+																<div class="Polaris-Select__Content" aria-hidden="true" aria-disabled="false">
+																	<span class="Polaris-Select__InlineLabel">Sort by</span><span
+																		class="Polaris-Select__SelectedOption">Newest update</span><span
+																		class="Polaris-Select__Icon"><span class="Polaris-Icon"><span
+																				class="Polaris-VisuallyHidden"></span><svg viewBox="0 0 20 20"
+																				class="Polaris-Icon__Svg" focusable="false" aria-hidden="true">
+																				<path
+																					d="M7.676 9h4.648c.563 0 .879-.603.53-1.014L10.531 5.24a.708.708 0 0 0-1.062 0L7.145 7.986C6.798 8.397 7.113 9 7.676 9zm4.648 2H7.676c-.563 0-.878.603-.53 1.014l2.323 2.746c.27.32.792.32 1.062 0l2.323-2.746c.349-.411.033-1.014-.53-1.014z">
+																				</path>
+																			</svg></span></span>
+																</div>
+																<div class="Polaris-Select__Backdrop"></div>
+															</div>
+														</div>
+													</div>
+													<div class="Polaris-ResourceList__SelectButtonWrapper"><button class="Polaris-Button"
+															type="button"><span class="Polaris-Button__Content"><span
+																	class="Polaris-Button__Icon"><span class="Polaris-Icon"><span
+																			class="Polaris-VisuallyHidden"></span><svg viewBox="0 0 20 20"
+																			class="Polaris-Icon__Svg" focusable="false" aria-hidden="true">
+																			<path fill-rule="evenodd"
+																				d="M4.5 3A1.5 1.5 0 0 0 3 4.5v11A1.5 1.5 0 0 0 4.5 17h11a1.5 1.5 0 0 0 1.5-1.5v-11A1.5 1.5 0 0 0 15.5 3h-11zm9.207 5.707a1 1 0 0 0-1.414-1.414L9 10.586 7.707 9.293a1 1 0 0 0-1.414 1.414l2 2a1 1 0 0 0 1.414 0l4-4z">
+																			</path>
+																		</svg></span></span><span
+																	class="Polaris-Button__Text">Select</span></span></button></div>
+												</div>
+												<div class="Polaris-ResourceList__BulkActionsWrapper">
+													<div>
+														<div
+															class="Polaris-BulkActions__Group Polaris-BulkActions__Group--largeScreen Polaris-BulkActions__Group--exited">
+															<div class="Polaris-BulkActions__ButtonGroupWrapper">
+																<div class="Polaris-ButtonGroup Polaris-ButtonGroup--segmented"
+																	data-buttongroup-segmented="true">
+																	<div class="Polaris-ButtonGroup__Item">
+																		<div class="Polaris-CheckableButton">
+																			<div class="Polaris-CheckableButton__Checkbox"><label
+																					class="Polaris-Choice Polaris-Choice--labelHidden"
+																					for="PolarisCheckbox2"><span class="Polaris-Choice__Control"><span
+																							class="Polaris-Checkbox"><input id="PolarisCheckbox2"
+																								type="checkbox" class="Polaris-Checkbox__Input"
+																								aria-invalid="false" role="checkbox"
+																								aria-checked="false" value=""><span
+																								class="Polaris-Checkbox__Backdrop"></span><span
+																								class="Polaris-Checkbox__Icon"><span
+																									class="Polaris-Icon"><span
+																										class="Polaris-VisuallyHidden"></span><svg
+																										viewBox="0 0 20 20" class="Polaris-Icon__Svg"
+																										focusable="false" aria-hidden="true">
+																										<path
+																											d="m8.315 13.859-3.182-3.417a.506.506 0 0 1 0-.684l.643-.683a.437.437 0 0 1 .642 0l2.22 2.393 4.942-5.327a.436.436 0 0 1 .643 0l.643.684a.504.504 0 0 1 0 .683l-5.91 6.35a.437.437 0 0 1-.642 0">
+																										</path>
+																									</svg></span></span></span></span><span
+																						class="Polaris-Choice__Label">Select all <span
+																							th:text="${products.size}" />
+																						Products</span></label></div><span
+																				class="Polaris-CheckableButton__Label">0 selected</span>
+																		</div>
+																	</div>
+																	<div class="Polaris-ButtonGroup__Item">
+																		<div class="Polaris-BulkActions__BulkActionButton"><button
+																				class="Polaris-Button" type="button"><span
+																					class="Polaris-Button__Content"><span
+																						class="Polaris-Button__Text">Edit
+																						customers</span></span></button></div>
+																	</div>
+																	<div class="Polaris-ButtonGroup__Item">
+																		<div>
+																			<div>
+																				<div class="Polaris-BulkActions__BulkActionButton"><button
+																						class="Polaris-Button" type="button" tabindex="0"
+																						aria-controls="Polarispopover7" aria-owns="Polarispopover7"
+																						aria-expanded="false"><span
+																							class="Polaris-Button__Content"><span
+																								class="Polaris-Button__Text">More
+																								actions</span><span class="Polaris-Button__Icon">
+																								<div class=""><span class="Polaris-Icon"><span
+																											class="Polaris-VisuallyHidden"></span><svg
+																											viewBox="0 0 20 20"
+																											class="Polaris-Icon__Svg"
+																											focusable="false" aria-hidden="true">
+																											<path
+																												d="M13.098 8H6.902c-.751 0-1.172.754-.708 1.268L9.292 12.7c.36.399 1.055.399 1.416 0l3.098-3.433C14.27 8.754 13.849 8 13.098 8z">
+																											</path>
+																										</svg></span></div>
+																							</span></span></button></div>
+																			</div>
+																		</div>
+																	</div>
+																</div>
+															</div>
+														</div>
+													</div>
+												</div>
+											</div>
+										</div>
+									</div>
+								</div>
+								<ul class="Polaris-ResourceList" aria-live="polite" th:inline="text">
+									<li class="Polaris-ResourceItem__ListItem" th:each="currentProduct: ${products.values}">
+										<div class="Polaris-ResourceItem__ItemWrapper">
+											<div class="Polaris-ResourceItem Polaris-ResourceItem--selectable Polaris-ResourceItem--persistActions"
+												data-href="customers/341"><a th:attr="aria-describedby=${currentProduct.id}"
+													aria-label="View details for Mae Jemison" class="Polaris-ResourceItem__Link" tabindex="0"
+													id="PolarisResourceListItemOverlay7" th:href="'products/' + ${currentProduct.id}"
+													data-polaris-unstyled="true"></a>
+												<div class="Polaris-ResourceItem__Container" th:id="${currentProduct.id}">
+													<div class="Polaris-ResourceItem__Owned">
+														<div class="Polaris-ResourceItem__Handle">
+															<div class="Polaris-ResourceItem__CheckboxWrapper">
+																<div><label class="Polaris-Choice Polaris-Choice--labelHidden"
+																		for="PolarisResourceListItemCheckbox7"><span
+																			class="Polaris-Choice__Control"><span class="Polaris-Checkbox"><input
+																					id="PolarisResourceListItemCheckbox7" type="checkbox"
+																					class="Polaris-Checkbox__Input" aria-invalid="false"
+																					role="checkbox" aria-checked="false" value=""><span
+																					class="Polaris-Checkbox__Backdrop"></span><span
+																					class="Polaris-Checkbox__Icon"><span class="Polaris-Icon"><span
+																							class="Polaris-VisuallyHidden"></span><svg
+																							viewBox="0 0 20 20" class="Polaris-Icon__Svg"
+																							focusable="false" aria-hidden="true">
+																							<path
+																								d="m8.315 13.859-3.182-3.417a.506.506 0 0 1 0-.684l.643-.683a.437.437 0 0 1 .642 0l2.22 2.393 4.942-5.327a.436.436 0 0 1 .643 0l.643.684a.504.504 0 0 1 0 .683l-5.91 6.35a.437.437 0 0 1-.642 0">
+																							</path>
+																						</svg></span></span></span></span><span
+																			class="Polaris-Choice__Label">View details
+																			for</span> <span th:text="${currentProduct.title}" /> </label></div>
+															</div>
+														</div>
+														<div class="Polaris-ResourceItem__Media"><span aria-label="Mae Jemison" role="img"
+																class="Polaris-Avatar Polaris-Avatar--sizeMedium"><span
+																	class="Polaris-Avatar__Initials"><svg class="Polaris-Avatar__Svg"
+																		viewBox="0 0 40 40">
+																		<path fill="currentColor"
+																			d="M8.28 27.5A14.95 14.95 0 0120 21.8c4.76 0 8.97 2.24 11.72 5.7a14.02 14.02 0 01-8.25 5.91 14.82 14.82 0 01-6.94 0 14.02 14.02 0 01-8.25-5.9zM13.99 12.78a6.02 6.02 0 1112.03 0 6.02 6.02 0 01-12.03 0z">
+																		</path>
+																	</svg></span></span></div>
+													</div>
+													<div class="Polaris-ResourceItem__Content">
+														<h3><span class="Polaris-TextStyle--variationStrong" th:text="${currentProduct.title}"></span>
+														</h3>
+														<div><span th:text="${currentProduct.productType}"></div>
+													</div>
+													<div class="Polaris-ResourceItem__Actions">
+														<div class="Polaris-ButtonGroup">
+															<div class="Polaris-ButtonGroup__Item Polaris-ButtonGroup__Item--plain"><a
+																	class="Polaris-Button Polaris-Button--plain" href="orders/1456"
+																	data-polaris-unstyled="true"><span class="Polaris-Button__Content"><span
+																			class="Polaris-Button__Text">View latest
+																			order</span></span></a></div>
+														</div>
+													</div>
+													<div class="Polaris-ResourceItem__Disclosure">
+														<div><button class="Polaris-Button Polaris-Button--plain Polaris-Button--iconOnly"
+																aria-label="Actions dropdown" type="button" tabindex="0"
+																aria-controls="Polarispopover4" aria-owns="Polarispopover4"
+																aria-expanded="false"><span class="Polaris-Button__Content"><span
+																		class="Polaris-Button__Icon"><span class="Polaris-Icon"><span
+																				class="Polaris-VisuallyHidden"></span><svg viewBox="0 0 20 20"
+																				class="Polaris-Icon__Svg" focusable="false" aria-hidden="true">
+																				<path
+																					d="M6 10a2 2 0 1 1-4.001-.001A2 2 0 0 1 6 10zm6 0a2 2 0 1 1-4.001-.001A2 2 0 0 1 12 10zm6 0a2 2 0 1 1-4.001-.001A2 2 0 0 1 18 10z">
+																				</path>
+																			</svg></span></span></span></button></div>
+													</div>
+												</div>
+											</div>
+										</div>
+									</li>
+								</ul>
+							</div>
+						</div>
+						<div id="PolarisPortalsContainer">
+							<div data-portal-id="sheet-Polarisportal5"></div>
+							<div data-portal-id="popover-Polarisportal6"></div>
+							<div data-portal-id="popover-Polarisportal7"></div>
+							<div data-portal-id="popover-Polarisportal8"></div>
+							<div data-portal-id="popover-Polarisportal9"></div>
+						</div>
+					</div>
+				</div>
+			</div>
+		</div>
+
+	</div>
+
+	<!-- the footer content-->
+	<div id="dash-footer" th:replace="~{fragments/app-fragments :: footer(footerText = 'hidey-ho!')}"></div>
+
+</body>
+
+</html>

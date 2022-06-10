@@ -1,0 +1,74 @@
+---
+logging:
+  file:
+    name: /tmp/shopify-test.log
+    
+server:
+  address: 0.0.0.0
+  tomcat:
+    remoteip:
+      protocol-header: x-forwarded-proto
+      remote-ip-header: x-forwarded-for
+
+shopify:
+  api:
+    graphql:
+      version: 2021-10
+    rest:
+      version: 2021-10
+  app:
+    hostname: https://${SHOPIFY_APP_HOSTNAME}
+    embedded: false  # Set this to true if your App UI should be embedded in the Shopify Admin
+  auth:
+    apiKey: # Your Shopify App API Key
+    apiSecret: # Your Shopify App API Secret
+    tokenEncryptionKey: # Your encryption key, a 256 bit AES key, Base64 Encoded. You can get one here - https://www.digitalsanctuary.com/aes-key-generator-free
+  security:
+    unprotectedURIs: /,/index.html,/favicon.ico,/error,/css/*,/js/*,/dist/*,/img/*,/webhook/*
+    authSuccessPage: /dash  # The page to redirect to after successful OAuth authentication
+
+spring:
+  application:
+    name: Shopify Integration Framework
+  datasource:
+    driverClassName: org.mariadb.jdbc.Driver
+    password: shopifytest
+    url: jdbc:mysql://localhost:3306/shopifytest?createDatabaseIfNotExist=true
+    username: shopifytest
+  devtools:
+    restart:
+      enabled: true
+  jackson:
+    serialization:
+      wrap-root-value: true
+    deserialization:
+      unwrap-root-value: true
+  jpa:
+    hibernate:
+      ddl-auto: update
+    properties:
+      hibernate:
+        dialect: org.hibernate.dialect.MariaDB103Dialect
+    show-sql: false
+  messages:
+    basename: messages/messages
+  security:
+    oauth2:
+      client:
+        provider:
+          shopify:
+            authorization-uri: https://shopname.myshopify.com/admin/oauth/authorize   # Do not change this
+            token-uri: https://shopname.myshopify.com/admin/oauth/access_token    # Do not change this
+            user-info-uri: null
+            user-name-attribute: shop
+        registration:
+          shopify:
+            authorization-grant-type: authorization_code
+            client-id: ${shopify.auth.apiKey}
+            client-secret: ${shopify.auth.apiSecret}
+            redirect-uri: '{baseUrl}/login/oauth2/code/{registrationId}'
+            scope: read_products,write_products,read_price_rules,write_price_rules,read_inventory,write_inventory
+  thymeleaf:
+    cache: false
+    suffix: .html
+    template-loader-path: classpath:/templates

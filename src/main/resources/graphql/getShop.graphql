@@ -1,0 +1,8 @@
+{
+  shop {
+    name
+    currencyCode
+    checkoutApiSupported
+    taxesIncluded
+  }
+}

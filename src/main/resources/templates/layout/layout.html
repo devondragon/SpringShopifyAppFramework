@@ -1,0 +1,56 @@
+<!DOCTYPE HTML>
+<html xmlns:th="http://www.thymeleaf.org"
+    th:fragment="main-fragment (title, otherStaticResources, nav, header, mainContent, footer)">
+	<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<head>
+<meta charset="UTF-8" />
+<title th:replace="${title}">Polaris</title>
+<script type="text/javascript" src="....//static/js/primary.js" th:src="@{/js/primary.js}"></script>
+<script src="https://code.jquery.com/jquery-3.6.0.min.js" integrity="sha256-/xUj+3OJU5yExlq6GSYGSHk7tPXikynS7ogEvDej/m4=" crossorigin="anonymous"></script>
+<script src="https://code.jquery.com/ui/1.12.1/jquery-ui.min.js" integrity="sha256-VazP97ZCwtekAsvgPBSUwPFKdrwD3unUfSGVYrahUqU=" crossorigin="anonymous"></script>
+<link rel="stylesheet" type="text/css" th:href="@{/css/primary.css}" href="../../static/css/primary.css"/>
+<link rel="stylesheet" href="https://unpkg.com/@shopify/polaris@5.0.0/dist/styles.css" />
+<!-- Other javascript, css source files -->
+<th:block th:replace="${otherStaticResources} ?: ~{}"></th:block>
+</head>
+<body>
+    <div style="--top-bar-background: #00848e; --top-bar-background-lighter: #1d9ba4; --top-bar-color: #f9fafb; --p-frame-offset: 0px;">
+		<div class="Polaris-Page">
+
+            <div class="Polaris-Page-Header Polaris-Page-Header--separator Polaris-Page-Header--hasNavigation">
+                <span th:insert="${nav} ?: ~{}" >
+                    <ul>
+                        <li><a href="#">Page 1</a></li>
+                        <li><a href="#">Page 2</a></li>
+                    </ul>
+                </span>
+                
+				<div class="Polaris-Page-Header__MainContent">
+					<div class="Polaris-Page-Header__TitleActionMenuWrapper">
+						<div class="Polaris-Page-Header__Title">
+							<div>
+                                <h2 th:replace="${title}">Polaris</h2>
+							</div>
+						</div>
+                        <header th:insert="${header} ?: ~{}">
+                        </header>
+					</div>
+				</div>
+			</div>
+
+            <div class="Polaris-Page__Content">
+				<div class="Polaris-Layout">
+                        <article th:insert="${mainContent} ?: ~{}">
+                            <h1>Page 1</h1>
+                            <p>Main content of Page 1</p>
+                        </article>
+                    </section>
+
+                    <footer th:insert="${footer} ?: ~{}"> </footer>
+
+                </div>
+            </div>
+        </div>
+    </div>
+</body>
+</html>

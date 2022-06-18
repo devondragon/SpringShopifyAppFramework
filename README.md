@@ -11,6 +11,12 @@ The planned scope for this project includes:
 4.  An App Bridge based front end - Done
 
 
+## Documentation
+This is a work in progress.  
+
+Main Documenatation Home is here: [https://github.com/devondragon/SpringShopifyAppFramework/wiki](https://github.com/devondragon/SpringShopifyAppFramework/wiki)
+
+The Quick Start Guide is here:   [https://github.com/devondragon/SpringShopifyAppFramework/wiki/Quick-Start-Guide](https://github.com/devondragon/SpringShopifyAppFramework/wiki/Quick-Start-Guide)
 
 ## Security
 

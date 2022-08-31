@@ -1,6 +1,8 @@
 package com.justblackmagic.shopify.auth.util;
 
 import java.io.UnsupportedEncodingException;
+import java.net.URLDecoder;
+import java.nio.charset.StandardCharsets;
 import java.security.InvalidKeyException;
 import java.security.NoSuchAlgorithmException;
 import javax.crypto.Mac;
@@ -48,6 +50,10 @@ public class ShopifyHMACValidator {
                 // It may be better to pull the query params into a collection, remove the hmac param, and then re-build the query string, but this
                 // seems to be working
                 String data = queryString.replaceAll("hmac=" + hmac + "&?", "");
+
+                // https://github.com/devondragon/SpringShopifyAppFramework/issues/9
+                data = URLDecoder.decode(data, StandardCharsets.UTF_8);
+
                 if (data.endsWith("&") && data.length() > 1) {
                     data = data.substring(0, data.length() - 1);
                 }

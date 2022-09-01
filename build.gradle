@@ -1,15 +1,14 @@
 plugins {
-	id 'org.springframework.boot' version '2.6.6'
-	id 'io.spring.dependency-management' version '1.0.11.RELEASE'
+	id 'org.springframework.boot' version '2.7.3'
+	id 'io.spring.dependency-management' version '1.0.13.RELEASE'
 	id 'java'
-	id 'eclipse'
-	id "com.github.ben-manes.versions" version "0.39.0"
-	id "com.github.node-gradle.node" version "3.1.1"
+	id "com.github.ben-manes.versions" version "0.42.0"
+	id "com.github.node-gradle.node" version "3.4.0"
 }
 
 group = 'com.justblackmagic'
 version = '0.0.1-SNAPSHOT'
-sourceCompatibility = '11'
+sourceCompatibility = '17'
 
 configurations {
 	compileOnly {
@@ -20,8 +19,8 @@ configurations {
 
 repositories {
 	mavenCentral()
-	maven { url 'https://repo.spring.io/milestone' }
-    maven { url 'https://repo.spring.io/snapshot' }
+	// maven { url 'https://repo.spring.io/milestone' }
+    // maven { url 'https://repo.spring.io/snapshot' }
 }
 
 dependencies {
@@ -35,18 +34,18 @@ dependencies {
 	implementation 'org.thymeleaf.extras:thymeleaf-extras-springsecurity5'
 	implementation 'nz.net.ultraq.thymeleaf:thymeleaf-layout-dialect'
 	implementation 'org.springframework.boot:spring-boot-starter-webflux'
-	implementation 'joda-time:joda-time:2.10.13'
+	implementation 'joda-time:joda-time:2.11.1'
 	implementation 'org.apache.commons:commons-lang3:3.12.0'
 	implementation 'org.apache.commons:commons-text:1.9'
 	implementation 'com.github.rholder:guava-retrying:2.0.0'
-	implementation 'com.fasterxml.jackson.jaxrs:jackson-jaxrs-json-provider:2.13.2'
-	implementation 'com.fasterxml.jackson.datatype:jackson-datatype-joda:2.13.2'
+	implementation 'com.fasterxml.jackson.jaxrs:jackson-jaxrs-json-provider:2.13.3'
+	implementation 'com.fasterxml.jackson.datatype:jackson-datatype-joda:2.13.3'
 	implementation 'commons-io:commons-io:2.11.0'
- 	implementation 'io.netty:netty-resolver-dns-native-macos:4.1.70.Final:osx-aarch_64' 
+ 	implementation 'io.netty:netty-resolver-dns-native-macos:4.1.80.Final:osx-aarch_64' 
 
-    implementation 'io.jsonwebtoken:jjwt-api:0.11.2'
-    runtimeOnly 'io.jsonwebtoken:jjwt-impl:0.11.2'
-	runtimeOnly 'io.jsonwebtoken:jjwt-jackson:0.11.2'
+    implementation 'io.jsonwebtoken:jjwt-api:0.11.5'
+    runtimeOnly 'io.jsonwebtoken:jjwt-impl:0.11.5'
+	runtimeOnly 'io.jsonwebtoken:jjwt-jackson:0.11.5'
 
 	compileOnly 'org.projectlombok:lombok'
 	runtimeOnly 'org.mariadb.jdbc:mariadb-java-client'
@@ -59,14 +58,13 @@ dependencies {
 	testImplementation 'org.springframework.boot:spring-boot-starter-test'
 	testImplementation 'org.springframework.security:spring-security-test'
 	testImplementation 'com.h2database:h2'
-	testImplementation 'org.junit.jupiter:junit-jupiter-api:5.8.1'
+	testImplementation 'org.junit.jupiter:junit-jupiter-api:5.9.0'
 	implementation 'com.github.rest-driver:rest-driver:2.0.1'
-    testRuntimeOnly 'org.junit.jupiter:junit-jupiter-engine:5.8.1'
+    testRuntimeOnly 'org.junit.jupiter:junit-jupiter-engine:5.9.0'
 }
 
-test {
-	useJUnitPlatform()
-	
+tasks.named('test') {
+  useJUnitPlatform()
 }
 
 node {

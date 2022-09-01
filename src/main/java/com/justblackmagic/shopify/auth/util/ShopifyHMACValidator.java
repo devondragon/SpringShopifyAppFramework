@@ -51,12 +51,14 @@ public class ShopifyHMACValidator {
                 // seems to be working
                 String data = queryString.replaceAll("hmac=" + hmac + "&?", "");
 
-                // https://github.com/devondragon/SpringShopifyAppFramework/issues/9
-                data = URLDecoder.decode(data, StandardCharsets.UTF_8);
+
 
                 if (data.endsWith("&") && data.length() > 1) {
                     data = data.substring(0, data.length() - 1);
                 }
+                // https://github.com/devondragon/SpringShopifyAppFramework/issues/9
+                data = URLDecoder.decode(data, StandardCharsets.UTF_8);
+
                 log.debug("HMAC: {}", hmac);
                 log.debug("Data: {}", data);
                 log.trace("Secret: {}", secret);

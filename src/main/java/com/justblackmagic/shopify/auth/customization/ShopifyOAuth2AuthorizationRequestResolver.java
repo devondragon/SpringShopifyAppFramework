@@ -15,7 +15,7 @@ import lombok.extern.slf4j.Slf4j;
 
 /**
  * This class is used to customize the authorization request.
- * 
+ *
  * author: justblackmagic
  */
 @Slf4j
@@ -27,7 +27,7 @@ public class ShopifyOAuth2AuthorizationRequestResolver implements OAuth2Authoriz
 
     /**
      * Constructor
-     * 
+     *
      * @param clientRegistrationRepository
      */
     public ShopifyOAuth2AuthorizationRequestResolver(ClientRegistrationRepository clientRegistrationRepository) {
@@ -58,7 +58,7 @@ public class ShopifyOAuth2AuthorizationRequestResolver implements OAuth2Authoriz
             shopName = request.getSession().getAttribute(AuthConstants.SHOP_ATTRIBUE_NAME).toString();
             log.debug("shopName: {}", shopName);
         }
-        if (shopName == null || shopName.isEmpty()) {
+        if ((shopName == null || shopName.isEmpty()) && request != null) {
             if (request.getAttribute("shopName") != null) {
                 shopName = request.getAttribute("shopName").toString();
                 log.debug("shopName: {}", shopName);

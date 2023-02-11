@@ -2,43 +2,52 @@ package com.justblackmagic.shopify.app.controller.webhooks;
 
 import java.util.List;
 import javax.persistence.EntityManager;
-import javax.persistence.PersistenceContext;
 import javax.servlet.http.HttpServletRequest;
-import javax.servlet.http.HttpServletResponse;
 import javax.transaction.Transactional;
-import com.justblackmagic.shopify.auth.persistence.model.AuthorizedClient;
-import com.justblackmagic.shopify.auth.persistence.repository.JPAAuthorizedClientRepository;
-import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
+import com.justblackmagic.shopify.auth.persistence.model.AuthorizedClient;
+import com.justblackmagic.shopify.auth.persistence.repository.JPAAuthorizedClientRepository;
+import com.justblackmagic.shopify.auth.util.ShopifyHMACValidator;
 import lombok.extern.slf4j.Slf4j;
 
 @Slf4j
 @RestController
 public class UninstallWebhook {
 
-    @Autowired
-    private JPAAuthorizedClientRepository authorizedClientRepository;
+    private final JPAAuthorizedClientRepository authorizedClientRepository;
+    private final ShopifyHMACValidator shopifyHMACValidator;
+    private final EntityManager entityManager;
 
-    @PersistenceContext
-    private EntityManager entityManager;
+    public UninstallWebhook(JPAAuthorizedClientRepository authorizedClientRepository, ShopifyHMACValidator shopifyHMACValidator,
+            EntityManager entityManager) {
+        this.authorizedClientRepository = authorizedClientRepository;
+        this.shopifyHMACValidator = shopifyHMACValidator;
+        this.entityManager = entityManager;
+    }
 
     @Transactional
     @PostMapping(value = "/webhook/uninstall", produces = MediaType.APPLICATION_JSON_VALUE)
-    public ResponseEntity<String> uninstallApp(HttpServletRequest request, HttpServletResponse response, @RequestParam String id) {
+    public ResponseEntity<String> uninstallApp(HttpServletRequest request, @RequestBody String requestBody, @RequestParam String id) {
         log.debug("request: {}", request);
         log.debug("id: {}", id);
-        if (id != null) {
-            List<AuthorizedClient> clients = authorizedClientRepository.findByClientRegistrationId(id);
-            for (AuthorizedClient authorizedClient : clients) {
-                entityManager.remove(authorizedClient);
-            }
-            return ResponseEntity.ok("{\"message\": \"success\"}");
+
+        if (!shopifyHMACValidator.validatePostHMAC(request, requestBody)) {
+            return ResponseEntity.status(HttpStatus.FORBIDDEN).build();
         }
-        return ResponseEntity.ok("{\"status\":\"ok\"}");
+
+        if (id == null) {
+            return ResponseEntity.ok("{\"status\":\"ok\"}");
+        }
+
+        List<AuthorizedClient> clients = authorizedClientRepository.findByClientRegistrationId(id);
+        clients.forEach(entityManager::remove);
+        return ResponseEntity.ok("{\"message\": \"success\"}");
     }
 
 }

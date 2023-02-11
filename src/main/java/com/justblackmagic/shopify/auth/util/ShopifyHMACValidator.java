@@ -5,20 +5,20 @@ import java.net.URLDecoder;
 import java.nio.charset.StandardCharsets;
 import java.security.InvalidKeyException;
 import java.security.NoSuchAlgorithmException;
+import java.util.Base64;
 import javax.crypto.Mac;
 import javax.crypto.spec.SecretKeySpec;
 import javax.servlet.http.HttpServletRequest;
 import org.springframework.beans.factory.annotation.Value;
-import org.springframework.security.crypto.codec.Hex;
 import org.springframework.stereotype.Service;
 import org.springframework.util.StringUtils;
 import lombok.extern.slf4j.Slf4j;
 
 /**
  * A Service to validate and verify the Shopify HMAC signature on incoming requests.
- * 
+ *
  * Currently is only working on some requests, not all. More debugging needs to be done.
- * 
+ *
  * @author justblackmagic
  */
 
@@ -26,14 +26,15 @@ import lombok.extern.slf4j.Slf4j;
 @Service
 public class ShopifyHMACValidator {
 
+    private static final String HMAC_SHA256 = "HmacSHA256";
     @Value("${shopify.auth.apiSecret}")
     private String secret;
 
     /**
      * Validates the HMAC signature on the incoming request.
-     * 
+     *
      * For GET and POST requests, checks to see if there is an HMAC to validate, and if so, validates it against the correct request data.
-     * 
+     *
      * @param request HttpServletRequest
      * @return true if valid, false if not
      */
@@ -66,8 +67,6 @@ public class ShopifyHMACValidator {
                     valid = verifyHmac(data, hmac, secret);
                 } catch (IllegalStateException e) {
                     log.error("validateHMAC: IllegalStateException!", e);
-                } catch (UnsupportedEncodingException e) {
-                    log.error("validateHMAC: UnsupportedEncodingException!", e);
                 }
             } else {
                 log.debug("validateHMAC called with a GET method and no hmac query param.");
@@ -81,9 +80,29 @@ public class ShopifyHMACValidator {
         return valid;
     }
 
+    public boolean validatePostHMAC(HttpServletRequest request, String requestBodyString) {
+        log.debug("validatePostHMAC: Validating HMAC for request: {}", request.toString());
+        boolean valid = false;
+        String hmac = request.getHeader("X-Shopify-Hmac-Sha256");
+        // If we have an hmac parameter, we need to validate it.
+        if (StringUtils.hasText(hmac)) {
+            try {
+                valid = verifyHmac(requestBodyString, hmac, secret);
+            } catch (IllegalStateException e) {
+                log.error("Error while validating HMAC", e);
+            }
+        } else {
+            log.debug("validatePostHMAC: called with no hmac header.");
+        }
+
+        log.debug("validatePostHMAC: returning: {}", valid);
+        return valid;
+    }
+
+
     /**
      * Verifies the HMAC signature against the provided data and secret.
-     * 
+     *
      * @param data
      * @param hmac
      * @param secret
@@ -91,13 +110,13 @@ public class ShopifyHMACValidator {
      * @throws IllegalStateException
      * @throws UnsupportedEncodingException
      */
-    public boolean verifyHmac(String data, String hmac, String secret) throws IllegalStateException, UnsupportedEncodingException {
+    public boolean verifyHmac(String data, String hmac, String secret) {
         try {
-            Mac hmacSHA256 = Mac.getInstance("HmacSHA256");
-            SecretKeySpec key = new SecretKeySpec(secret.getBytes("UTF-8"), "HmacSHA256");
+            Mac hmacSHA256 = Mac.getInstance(HMAC_SHA256);
+            SecretKeySpec key = new SecretKeySpec(secret.getBytes(StandardCharsets.UTF_8), HMAC_SHA256);
             hmacSHA256.init(key);
-            String calculated = String.valueOf(Hex.encode(hmacSHA256.doFinal(data.getBytes("UTF-8"))));
-            log.debug("CalcultedHMAC: {}", calculated);
+            byte[] rawHmac = hmacSHA256.doFinal(data.getBytes(StandardCharsets.UTF_8));
+            String calculated = Base64.getEncoder().encodeToString(rawHmac);
             return hmac.equals(calculated);
         } catch (NoSuchAlgorithmException | InvalidKeyException ex) {
             log.error("Error verifying hmac", ex);

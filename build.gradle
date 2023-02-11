@@ -1,5 +1,5 @@
 plugins {
-	id 'org.springframework.boot' version '2.7.3'
+	id 'org.springframework.boot' version '2.7.8'
 	id 'io.spring.dependency-management' version '1.0.13.RELEASE'
 	id 'java'
 	id "com.github.ben-manes.versions" version "0.42.0"
@@ -42,7 +42,7 @@ dependencies {
 	implementation 'com.fasterxml.jackson.jaxrs:jackson-jaxrs-json-provider:2.13.3'
 	implementation 'com.fasterxml.jackson.datatype:jackson-datatype-joda:2.13.3'
 	implementation 'commons-io:commons-io:2.11.0'
- 	implementation 'io.netty:netty-resolver-dns-native-macos:4.1.80.Final:osx-aarch_64' 
+ 	implementation 'io.netty:netty-resolver-dns-native-macos:4.1.80.Final:osx-aarch_64'
 
     implementation 'io.jsonwebtoken:jjwt-api:0.11.5'
     runtimeOnly 'io.jsonwebtoken:jjwt-impl:0.11.5'
@@ -85,7 +85,7 @@ processResources.dependsOn 'buildReactApp'
 
 
 bootJar {
-    
+
     launchScript{
         properties 'confFolder': '/opt/app/conf/'
     }
@@ -94,7 +94,7 @@ bootJar {
 bootRun {
     // Use Spring Boot DevTool only when we run Gradle bootRun task
     classpath = sourceSets.main.runtimeClasspath + configurations.dev
-    
+
     if (project.hasProperty('profiles')) {
 		environment SPRING_PROFILES_ACTIVE: profiles
 	} else {

@@ -21,7 +21,7 @@ import lombok.extern.slf4j.Slf4j;
  * Creating a JPA based OAuth2AuthorizedClientService implementation to persist authorized OAuth2 clients information in a database. Spring Security
  * provides a database backed OAuth2AuthorizedClientService implementation, but it does not use JPA, only works with MySQL, etc... This solution is
  * simpler and more flexible.
- * 
+ *
  * @author justblackmagic
  */
 @Slf4j
@@ -41,7 +41,7 @@ public class JPAOAuth2AuthorizedClientService implements OAuth2AuthorizedClientS
 
 	/**
 	 * Loads the authorized client for the given principal and client registration id.
-	 * 
+	 *
 	 * @param clientRegistrationId
 	 * @param principalName
 	 * @return T
@@ -52,7 +52,7 @@ public class JPAOAuth2AuthorizedClientService implements OAuth2AuthorizedClientS
 		log.debug("loadAuthorizedClient({}, {})", clientRegistrationId, principalName);
 		// Build the composite key ID
 		AuthorizedClientId clientId = new AuthorizedClientId(clientRegistrationId, principalName);
-		AuthorizedClient authorizedClient = jpaAuthorizedClientRepository.getById(clientId);
+		AuthorizedClient authorizedClient = jpaAuthorizedClientRepository.getReferenceById(clientId);
 
 
 		ClientRegistration clientRegistration = this.clientRegistrationRepository.findByRegistrationId("shopify");
@@ -68,7 +68,7 @@ public class JPAOAuth2AuthorizedClientService implements OAuth2AuthorizedClientS
 
 	/**
 	 * Saves the authorized client with the given principal.
-	 * 
+	 *
 	 * @param pAuthorizedClient
 	 * @param pPrincipal
 	 */
@@ -93,7 +93,7 @@ public class JPAOAuth2AuthorizedClientService implements OAuth2AuthorizedClientS
 
 	/**
 	 * Removes the authorized client for the given principal and client registration id.
-	 * 
+	 *
 	 * @param pClientRegistrationId
 	 * @param pPrincipalName
 	 */

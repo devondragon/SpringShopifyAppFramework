@@ -1,7 +1,8 @@
 {
     "java.configuration.updateBuildConfiguration": "automatic",
-    "java.jdt.ls.vmargs": "-XX:+UseParallelGC -XX:GCTimeRatio=4 -XX:AdaptiveSizePolicyWeight=90 -Dsun.zip.disableMemoryMapping=true -Xmx2G -Xms100m -javaagent:\"/Users/devon/.vscode/extensions/gabrielbb.vscode-lombok-1.0.1/server/lombok.jar\"",
+    "java.jdt.ls.vmargs": "-XX:+UseParallelGC -XX:GCTimeRatio=4 -XX:AdaptiveSizePolicyWeight=90 -Dsun.zip.disableMemoryMapping=true -Xmx4G -Xms100m -javaagent:\"/Users/devon/.vscode/extensions/gabrielbb.vscode-lombok-1.0.1/server/lombok.jar\"",
     "java.import.gradle.java.home": "/Library/Java/JavaVirtualMachines/zulu-17.jdk/Contents/Home",
     "java.configuration.runtimes": [],
-    "terminal.integrated.altClickMovesCursor": false
+    "terminal.integrated.altClickMovesCursor": false,
+    "java.compile.nullAnalysis.mode": "automatic"
 }

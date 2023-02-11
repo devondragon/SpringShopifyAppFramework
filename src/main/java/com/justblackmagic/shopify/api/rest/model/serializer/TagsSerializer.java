@@ -34,12 +34,14 @@ public class TagsSerializer extends StdSerializer<Set<String>> {
         }
 
         final StringBuilder tagStringBuilder = new StringBuilder();
-        final Iterator<String> tagIterator = value.iterator();
-        while (tagIterator.hasNext()) {
-            final String tag = tagIterator.next();
-            tagStringBuilder.append(tag);
-            if (tagIterator.hasNext()) {
-                tagStringBuilder.append(TAG_SERIALIZATION_DELIMITTER);
+        if (value != null) {
+            final Iterator<String> tagIterator = value.iterator();
+            while (tagIterator.hasNext()) {
+                final String tag = tagIterator.next();
+                tagStringBuilder.append(tag);
+                if (tagIterator.hasNext()) {
+                    tagStringBuilder.append(TAG_SERIALIZATION_DELIMITTER);
+                }
             }
         }
         gen.writeFieldName("tags");

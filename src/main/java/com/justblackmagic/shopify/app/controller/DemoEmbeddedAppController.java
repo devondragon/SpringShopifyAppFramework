@@ -115,7 +115,7 @@ public class DemoEmbeddedAppController {
                 byte[] decodedBytes = Base64.getDecoder().decode(token);
                 shopName = new String(decodedBytes);
                 log.debug("host decoded to shopName: {}", shopName);
-                if (shopName != null && shopName.contains("/admin")) {
+                if (shopName.contains("/admin")) {
                     shopName = shopName.substring(0, shopName.indexOf("/admin"));
                     log.debug("cleaned up shopName: {}", shopName);
                 }

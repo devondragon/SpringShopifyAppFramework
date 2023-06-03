@@ -76,7 +76,7 @@ public class JPAOAuth2AuthorizedClientService implements OAuth2AuthorizedClientS
 	public void saveAuthorizedClient(OAuth2AuthorizedClient pAuthorizedClient, Authentication pPrincipal) {
 		log.debug("saveAuthorizedClient({}, {})", pAuthorizedClient, pPrincipal);
 		AuthorizedClient authorizedClient = new AuthorizedClient();
-		authorizedClient.setClientRegistrationId(pAuthorizedClient.getClientRegistration().getClientId());
+		authorizedClient.setClientRegistrationId(pAuthorizedClient.getClientRegistration().getRegistrationId());
 		authorizedClient.setPrincipalName(pAuthorizedClient.getPrincipalName());
 		authorizedClient.setAccessTokenType(TokenType.BEARER.getValue());
 		authorizedClient.setAccessTokenValue(pAuthorizedClient.getAccessToken().getTokenValue());

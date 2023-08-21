@@ -2,14 +2,11 @@ package com.justblackmagic.shopify.auth.util;
 
 import java.security.Key;
 import java.util.Base64;
-
 import javax.crypto.Cipher;
 import javax.crypto.spec.SecretKeySpec;
-import javax.persistence.AttributeConverter;
-import javax.persistence.Converter;
-
 import org.springframework.beans.factory.annotation.Value;
-
+import jakarta.persistence.AttributeConverter;
+import jakarta.persistence.Converter;
 import lombok.extern.slf4j.Slf4j;
 
 /**

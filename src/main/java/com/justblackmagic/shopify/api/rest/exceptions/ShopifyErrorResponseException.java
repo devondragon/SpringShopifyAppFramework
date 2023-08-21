@@ -1,10 +1,8 @@
 package com.justblackmagic.shopify.api.rest.exceptions;
 
 import java.util.List;
-
-import javax.ws.rs.core.Response;
-
 import com.justblackmagic.shopify.api.rest.mappers.ResponseEntityToStringMapper;
+import jakarta.ws.rs.core.Response;
 
 public class ShopifyErrorResponseException extends RuntimeException {
 

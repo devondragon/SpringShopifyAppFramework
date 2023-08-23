@@ -115,8 +115,15 @@ public class DemoEmbeddedAppController {
                 byte[] decodedBytes = Base64.getDecoder().decode(token);
                 shopName = new String(decodedBytes);
                 log.debug("host decoded to shopName: {}", shopName);
+                if (shopName != null && shopName.contains("https://")) {
+                    // Need to strip off the "https://" prefix that comes in on the header value
+                    shopName = shopName.replace("https://", "");
+                }
                 if (shopName.contains("/admin")) {
                     shopName = shopName.substring(0, shopName.indexOf("/admin"));
+                    log.debug("cleaned up shopName: {}", shopName);
+                } else if (shopName.contains("admin")) {
+                    shopName = shopName.split("/")[2] + ".myshopify.com";
                     log.debug("cleaned up shopName: {}", shopName);
                 }
             }

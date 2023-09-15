@@ -20,8 +20,8 @@ shopify:
     hostname: https://${SHOPIFY_APP_HOSTNAME}
     embedded: false  # Set this to true if your App UI should be embedded in the Shopify Admin
   auth:
-    apiKey: # Your Shopify App API Key
-    apiSecret: # Your Shopify App API Secret
+    client-id: # Your Shopify App Client Id
+    client-secret: # Your Shopify App Client Secret
     tokenEncryptionKey: # Your encryption key, a 256 bit AES key, Base64 Encoded. You can get one here - https://www.digitalsanctuary.com/aes-key-generator-free
   security:
     unprotectedURIs: /,/index.html,/favicon.ico,/error,/css/*,/js/*,/dist/*,/img/*,/webhook/*
@@ -64,8 +64,8 @@ spring:
         registration:
           shopify:
             authorization-grant-type: authorization_code
-            client-id: ${shopify.auth.apiKey}
-            client-secret: ${shopify.auth.apiSecret}
+            client-id: ${shopify.auth.client-id}
+            client-secret: ${shopify.auth.client-secret}
             redirect-uri: '{baseUrl}/login/oauth2/code/{registrationId}'
             scope: read_products,write_products,read_price_rules,write_price_rules,read_inventory,write_inventory
   thymeleaf:

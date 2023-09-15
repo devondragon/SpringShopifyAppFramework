@@ -27,7 +27,7 @@ import lombok.extern.slf4j.Slf4j;
 public class ShopifyHMACValidator {
 
     private static final String HMAC_SHA256 = "HmacSHA256";
-    @Value("${shopify.auth.apiSecret}")
+    @Value("${shopify.auth.client-secret}")
     private String secret;
 
     /**

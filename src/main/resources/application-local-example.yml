@@ -10,10 +10,10 @@ spring:
 
 logging:
   level:
-    org.springframework.web: DEBUG
-    org.springframework.web.filter.CommonsRequestLoggingFilter: TRACE
-    org.springframework.security: TRACE
-    com.justblackmagic: TRACE
+    "[org.springframework.web]": DEBUG
+    "[org.springframework.web.filter.CommonsRequestLoggingFilter]": TRACE
+    "[org.springframework.security]": TRACE
+    "[com.justblackmagic]": TRACE
 #    reactor.netty.http.client: TRACE
     
 server:
@@ -27,12 +27,12 @@ shopify:
     hostname: $YOUR-APP-HOSTNAME
     embedded: true
   auth:
-    apiKey: $YOUR-api-key
-    apiSecret: $YOUR-api-secret
+    client-id: $YOUR-client-id
+    client-secret: $YOUR-client-secret
     tokenEncryptionKey: $YOUR-token-encryption-key - can generate here - https://www.digitalsanctuary.com/aes-key-generator-free
   test:
     storeName: $YOUR-TEST-STORE.myshopify.com
   security:
     unprotectedURIs: /,/index.html,/favicon.ico,/error,/css/*,/js/*,/dist/*,/img/*,/dash-embedded,/embedded-auth-check,/product-list
-    authSeccessPage: /dash-embedded
+    authSuccessPage: /dash-embedded
 

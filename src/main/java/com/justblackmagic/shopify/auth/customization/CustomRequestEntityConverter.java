@@ -2,9 +2,6 @@ package com.justblackmagic.shopify.auth.customization;
 
 import java.net.URI;
 import java.net.URISyntaxException;
-import javax.servlet.http.HttpServletRequest;
-import javax.servlet.http.HttpSession;
-import com.justblackmagic.shopify.auth.util.AuthConstants;
 import org.springframework.core.convert.converter.Converter;
 import org.springframework.http.RequestEntity;
 import org.springframework.security.oauth2.client.endpoint.OAuth2AuthorizationCodeGrantRequest;
@@ -13,6 +10,9 @@ import org.springframework.util.MultiValueMap;
 import org.springframework.web.context.request.RequestAttributes;
 import org.springframework.web.context.request.RequestContextHolder;
 import org.springframework.web.context.request.ServletRequestAttributes;
+import com.justblackmagic.shopify.auth.util.AuthConstants;
+import jakarta.servlet.http.HttpServletRequest;
+import jakarta.servlet.http.HttpSession;
 import lombok.extern.slf4j.Slf4j;
 
 /**

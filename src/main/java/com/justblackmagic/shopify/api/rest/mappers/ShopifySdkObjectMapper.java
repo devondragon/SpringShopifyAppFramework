@@ -10,7 +10,8 @@ import com.fasterxml.jackson.databind.introspect.JacksonAnnotationIntrospector;
 import com.fasterxml.jackson.databind.json.JsonMapper;
 import com.fasterxml.jackson.databind.type.TypeFactory;
 import com.fasterxml.jackson.datatype.joda.JodaModule;
-import com.fasterxml.jackson.module.jaxb.JaxbAnnotationIntrospector;
+import com.fasterxml.jackson.module.jakarta.xmlbind.JakartaXmlBindAnnotationIntrospector;
+
 
 /**
  * Instead of using the default Spring ObjectMapper we are using a custom one for the Shopify REST API. This way, we can customize the serialization
@@ -29,8 +30,8 @@ public class ShopifySdkObjectMapper {
 	 * 
 	 */
 	public static ObjectMapper buildMapper() {
-		final AnnotationIntrospector pair =
-				AnnotationIntrospector.pair(new JaxbAnnotationIntrospector(TypeFactory.defaultInstance()), new JacksonAnnotationIntrospector());
+		final AnnotationIntrospector pair = AnnotationIntrospector.pair(new JakartaXmlBindAnnotationIntrospector(TypeFactory.defaultInstance()),
+				new JacksonAnnotationIntrospector());
 
 		ObjectMapper objectMapper = JsonMapper.builder().enable(MapperFeature.ACCEPT_CASE_INSENSITIVE_PROPERTIES)
 				.disable(SerializationFeature.WRITE_DATES_AS_TIMESTAMPS).configure(SerializationFeature.FAIL_ON_EMPTY_BEANS, false)

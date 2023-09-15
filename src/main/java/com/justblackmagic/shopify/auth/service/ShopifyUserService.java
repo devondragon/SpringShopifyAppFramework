@@ -3,9 +3,6 @@ package com.justblackmagic.shopify.auth.service;
 import java.util.Collection;
 import java.util.Set;
 import java.util.stream.Collectors;
-import javax.servlet.http.HttpServletRequest;
-import javax.servlet.http.HttpSession;
-import com.justblackmagic.shopify.auth.util.AuthConstants;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.oauth2.client.userinfo.OAuth2UserRequest;
@@ -15,6 +12,9 @@ import org.springframework.security.oauth2.core.user.OAuth2User;
 import org.springframework.web.context.request.RequestAttributes;
 import org.springframework.web.context.request.RequestContextHolder;
 import org.springframework.web.context.request.ServletRequestAttributes;
+import com.justblackmagic.shopify.auth.util.AuthConstants;
+import jakarta.servlet.http.HttpServletRequest;
+import jakarta.servlet.http.HttpSession;
 import lombok.extern.slf4j.Slf4j;
 
 /**

@@ -1,19 +1,13 @@
 package com.justblackmagic.shopify.auth;
 
 import java.util.Arrays;
-import com.justblackmagic.shopify.auth.customization.CustomRequestEntityConverter;
-import com.justblackmagic.shopify.auth.customization.CustomTokenResponseConverter;
-import com.justblackmagic.shopify.auth.customization.ShopifyOAuth2AuthorizationRequestResolver;
-import com.justblackmagic.shopify.auth.customization.ShopifyOAuthAuthenticationSuccessHandler;
-import com.justblackmagic.shopify.auth.service.JPAOAuth2AuthorizedClientService;
-import com.justblackmagic.shopify.auth.service.ShopifyUserService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Bean;
+import org.springframework.context.annotation.Configuration;
 import org.springframework.http.converter.FormHttpMessageConverter;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
-import org.springframework.security.config.annotation.web.configuration.WebSecurityConfigurerAdapter;
 import org.springframework.security.oauth2.client.OAuth2AuthorizedClientService;
 import org.springframework.security.oauth2.client.endpoint.DefaultAuthorizationCodeTokenResponseClient;
 import org.springframework.security.oauth2.client.endpoint.OAuth2AccessTokenResponseClient;
@@ -26,9 +20,16 @@ import org.springframework.security.oauth2.client.web.OAuth2AuthorizedClientRepo
 import org.springframework.security.oauth2.client.web.reactive.function.client.ServletOAuth2AuthorizedClientExchangeFilterFunction;
 import org.springframework.security.oauth2.core.http.converter.OAuth2AccessTokenResponseHttpMessageConverter;
 import org.springframework.security.oauth2.core.user.OAuth2User;
+import org.springframework.security.web.SecurityFilterChain;
 import org.springframework.security.web.authentication.AuthenticationSuccessHandler;
 import org.springframework.web.client.RestTemplate;
 import org.springframework.web.reactive.function.client.WebClient;
+import com.justblackmagic.shopify.auth.customization.CustomRequestEntityConverter;
+import com.justblackmagic.shopify.auth.customization.CustomTokenResponseConverter;
+import com.justblackmagic.shopify.auth.customization.ShopifyOAuth2AuthorizationRequestResolver;
+import com.justblackmagic.shopify.auth.customization.ShopifyOAuthAuthenticationSuccessHandler;
+import com.justblackmagic.shopify.auth.service.JPAOAuth2AuthorizedClientService;
+import com.justblackmagic.shopify.auth.service.ShopifyUserService;
 import lombok.extern.slf4j.Slf4j;
 
 /**
@@ -36,9 +37,10 @@ import lombok.extern.slf4j.Slf4j;
  * 
  * @author justblackmagic
  */
+@Configuration
 @Slf4j
 @EnableWebSecurity
-public class ClientSecurityConfig extends WebSecurityConfigurerAdapter {
+public class ClientSecurityConfig {
 
 	@Value("#{'${shopify.security.unprotectedURIs}'.split(',')}")
 	private String[] unprotectedURIsArray;
@@ -47,21 +49,39 @@ public class ClientSecurityConfig extends WebSecurityConfigurerAdapter {
 	private ClientRegistrationRepository clientRegistrationRepository;
 
 
-	/**
-	 * @param http
-	 * @throws Exception
-	 */
-	@Override
-	protected void configure(HttpSecurity http) throws Exception {
+	@Bean
+	public SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception {
 		log.info("Configuring Spring Security...");
 		log.info("Unprotected URIs: {}", Arrays.toString(unprotectedURIsArray));
-		http.authorizeRequests().antMatchers(unprotectedURIsArray).permitAll().anyRequest().authenticated().and().oauth2Login()
-				.successHandler(shopifyOAuthAuthenticationSuccessHandler()).authorizationEndpoint()
-				.authorizationRequestResolver(new ShopifyOAuth2AuthorizationRequestResolver(this.clientRegistrationRepository)).and().and().logout()
-				.logoutSuccessUrl("/").and().oauth2Login().tokenEndpoint().accessTokenResponseClient(accessTokenResponseClient()).and()
-				.userInfoEndpoint().userService(getUserService());
-		http.csrf().disable();
+
+		http.authorizeHttpRequests((authorize) -> authorize.requestMatchers(unprotectedURIsArray).permitAll().anyRequest().authenticated());
+
+		http.oauth2Login((o -> o.successHandler(shopifyOAuthAuthenticationSuccessHandler())
+				.authorizationEndpoint(authorizationEndpoint -> authorizationEndpoint
+						.authorizationRequestResolver(new ShopifyOAuth2AuthorizationRequestResolver(this.clientRegistrationRepository)))
+				.tokenEndpoint(tokenEndpoint -> tokenEndpoint.accessTokenResponseClient(accessTokenResponseClient()))
+				.userInfoEndpoint(userInfo -> userInfo.userService(getUserService()))));
+
+		http.logout((logout) -> logout.logoutSuccessUrl("/"));
+		http.csrf((csrf) -> csrf.disable());
+		return http.build();
 	}
+
+	// /**
+	// * @param http
+	// * @throws Exception
+	// */
+	// @Override
+	// rotected void configure(HttpSecurity http) throws Exception {
+	// log.info("Configuring Spring Security...");
+	// log.info("Unprotected URIs: {}", Arrays.toString(unprotectedURIsArray));
+	// tp.authorizeRequests().antMatchers(unprotectedURIsArray).permitAll().anyRequest().authenticated().and().oauth2Login()
+	// .successHandler(shopifyOAuthAuthenticationSuccessHandler()).authorizationEndpoint()
+	// .authorizationRequestResolver(new ShopifyOAuth2AuthorizationRequestResolver(this.clientRegistrationRepository)).and().and().logout()
+	// .logoutSuccessUrl("/").and().oauth2Login().tokenEndpoint().accessTokenResponseClient(accessTokenResponseClient()).and()
+	// .userInfoEndpoint().userService(getUserService());
+	//
+
 
 
 	/**

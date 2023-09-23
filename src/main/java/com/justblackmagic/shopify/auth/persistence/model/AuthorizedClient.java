@@ -3,21 +3,17 @@ package com.justblackmagic.shopify.auth.persistence.model;
 import java.time.Instant;
 import java.util.Date;
 import java.util.Set;
-
-import javax.persistence.Convert;
-import javax.persistence.ElementCollection;
-import javax.persistence.Entity;
-import javax.persistence.EntityListeners;
-import javax.persistence.Id;
-import javax.persistence.IdClass;
-import javax.persistence.Temporal;
-import javax.persistence.TemporalType;
-
-import com.justblackmagic.shopify.auth.util.CryptoConverter;
-
 import org.springframework.data.annotation.CreatedDate;
 import org.springframework.data.jpa.domain.support.AuditingEntityListener;
-
+import com.justblackmagic.shopify.auth.util.CryptoConverter;
+import jakarta.persistence.Convert;
+import jakarta.persistence.ElementCollection;
+import jakarta.persistence.Entity;
+import jakarta.persistence.EntityListeners;
+import jakarta.persistence.Id;
+import jakarta.persistence.IdClass;
+import jakarta.persistence.Temporal;
+import jakarta.persistence.TemporalType;
 import lombok.Data;
 
 
@@ -47,7 +43,7 @@ public class AuthorizedClient {
 
 	private Instant accessTokenExpiresAt;
 
-	@ElementCollection(fetch = javax.persistence.FetchType.EAGER)
+	@ElementCollection(fetch = jakarta.persistence.FetchType.EAGER)
 	private Set<String> accessTokenScopes;
 
 	@CreatedDate

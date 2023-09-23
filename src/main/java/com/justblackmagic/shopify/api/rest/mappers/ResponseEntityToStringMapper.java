@@ -2,12 +2,10 @@ package com.justblackmagic.shopify.api.rest.mappers;
 
 import java.io.InputStream;
 import java.nio.charset.StandardCharsets;
-
-import javax.ws.rs.core.Response;
-
 import org.apache.commons.io.IOUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import jakarta.ws.rs.core.Response;
 
 public class ResponseEntityToStringMapper {
 

@@ -3,15 +3,6 @@ package com.justblackmagic.shopify.app.controller;
 import java.security.Principal;
 import java.util.Base64;
 import java.util.List;
-import javax.servlet.http.HttpServletRequest;
-import javax.servlet.http.HttpServletResponse;
-import com.justblackmagic.shopify.api.graphql.ShopifyGraphQLClientService;
-import com.justblackmagic.shopify.api.rest.ShopifyRestClientService;
-import com.justblackmagic.shopify.api.rest.model.ShopifyProduct;
-import com.justblackmagic.shopify.auth.persistence.model.AuthorizedClient;
-import com.justblackmagic.shopify.auth.persistence.repository.JPAAuthorizedClientRepository;
-import com.justblackmagic.shopify.auth.service.ShopifyStoreUser;
-import com.justblackmagic.shopify.auth.util.JWTUtil;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.MediaType;
@@ -20,7 +11,16 @@ import org.springframework.security.oauth2.client.authentication.OAuth2Authentic
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
+import com.justblackmagic.shopify.api.graphql.ShopifyGraphQLClientService;
+import com.justblackmagic.shopify.api.rest.ShopifyRestClientService;
+import com.justblackmagic.shopify.api.rest.model.ShopifyProduct;
+import com.justblackmagic.shopify.auth.persistence.model.AuthorizedClient;
+import com.justblackmagic.shopify.auth.persistence.repository.JPAAuthorizedClientRepository;
+import com.justblackmagic.shopify.auth.service.ShopifyStoreUser;
+import com.justblackmagic.shopify.auth.util.JWTUtil;
 import io.jsonwebtoken.MalformedJwtException;
+import jakarta.servlet.http.HttpServletRequest;
+import jakarta.servlet.http.HttpServletResponse;
 import lombok.extern.slf4j.Slf4j;
 
 @Slf4j

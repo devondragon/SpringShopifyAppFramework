@@ -1,0 +1,64 @@
+{
+    "properties": [
+        {
+            "name": "shopify.app.hostname",
+            "type": "java.lang.String",
+            "description": "A description for 'shopify.app.hostname'"
+        },
+        {
+            "name": "shopify.api.rest.version",
+            "type": "java.lang.String",
+            "description": "A description for 'shopify.api.rest.version'"
+        },
+        {
+            "name": "shopify.auth.token-encryption-key",
+            "type": "java.lang.String",
+            "description": "A description for 'shopify.auth.token-encryption-key'"
+        },
+        {
+            "name": "shopify.auth.client-id",
+            "type": "java.lang.String",
+            "description": "A description for 'shopify.auth.client-id'"
+        },
+        {
+            "name": "shopify.auth.client-secret",
+            "type": "java.lang.String",
+            "description": "A description for 'shopify.auth.client-secret'"
+        },
+        {
+            "name": "shopify.security.unprotectedURIs",
+            "type": "java.lang.String",
+            "description": "A description for 'shopify.security.unprotectedURIs'"
+        },
+        {
+            "name": "shopify.security.authSuccessPage",
+            "type": "java.lang.String",
+            "description": "A description for 'shopify.security.authSuccessPag'"
+        },
+        {
+            "name": "shopify.api.graphql.version",
+            "type": "java.lang.String",
+            "description": "A description for 'shopify.api.graphql.version'"
+        },
+        {
+            "name": "shopify.app.embedded",
+            "type": "java.lang.String",
+            "description": "A description for 'shopify.app.embedded'"
+        },
+        {
+            "name": "shopify.app.embedded",
+            "type": "java.lang.String",
+            "description": "A description for 'shopify.app.embedded'"
+        },
+        {
+            "name": "shopify.test.storeName",
+            "type": "java.lang.String",
+            "description": "A description for 'shopify.test'"
+        },
+        {
+            "name": "spring.thymeleaf.template-loader-path",
+            "type": "java.lang.String",
+            "description": "A description for 'spring.thymeleaf.template-loader-path'"
+        }
+    ]
+}

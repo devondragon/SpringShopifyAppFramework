@@ -8,10 +8,10 @@ import java.security.NoSuchAlgorithmException;
 import java.util.Base64;
 import javax.crypto.Mac;
 import javax.crypto.spec.SecretKeySpec;
-import javax.servlet.http.HttpServletRequest;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 import org.springframework.util.StringUtils;
+import jakarta.servlet.http.HttpServletRequest;
 import lombok.extern.slf4j.Slf4j;
 
 /**
@@ -27,7 +27,7 @@ import lombok.extern.slf4j.Slf4j;
 public class ShopifyHMACValidator {
 
     private static final String HMAC_SHA256 = "HmacSHA256";
-    @Value("${shopify.auth.apiSecret}")
+    @Value("${shopify.auth.client-secret}")
     private String secret;
 
     /**

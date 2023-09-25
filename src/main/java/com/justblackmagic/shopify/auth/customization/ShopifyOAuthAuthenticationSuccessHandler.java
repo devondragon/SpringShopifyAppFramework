@@ -16,7 +16,7 @@ import lombok.extern.slf4j.Slf4j;
 @Slf4j
 public class ShopifyOAuthAuthenticationSuccessHandler implements AuthenticationSuccessHandler {
 
-    @Value("${shopify.auth.apiKey}")
+    @Value("${shopify.auth.client-id}")
     private String shopifyAPIKey;
 
     @Value("${shopify.security.authSuccessPage}")

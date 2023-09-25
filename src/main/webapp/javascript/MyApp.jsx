@@ -1,15 +1,11 @@
 import React from 'react';
 import ReactDOM from 'react-dom';
-import { Buffer } from 'buffer';
 import { Provider, TitleBar } from '@shopify/app-bridge-react';
 import enTranslations from '@shopify/polaris/locales/en.json';
 import { AppProvider, Page, Card, Button, EmptyState } from '@shopify/polaris';
 import { getSessionToken } from "@shopify/app-bridge-utils";
-import ApolloClient from "apollo-client";
 import { authenticatedFetch } from "@shopify/app-bridge-utils";
 import createApp from "@shopify/app-bridge";
-import { HttpLink } from "apollo-link-http";
-import { InMemoryCache } from "apollo-cache-inmemory";
 import { regeneratorRuntime } from "regenerator-runtime"
 import { Redirect } from '@shopify/app-bridge/actions';
 
@@ -32,11 +28,12 @@ console.log('host: ' + host);
 
 const config = {
     apiKey: 'aeb97ee2e4b822c6664812bd902d3264',
-    host: host,
-    // forceRedirect: true
+    // host: host,
+    host: new URLSearchParams(location.search).get("host"),
+    forceRedirect: true
 };
 
-console.log('abount to call createApp()');
+console.log('about to call createApp()');
 const app = createApp(config);
 console.log('app created')
 
@@ -134,9 +131,9 @@ function authCheck() {
     const url = appApiHostname + "/embedded-auth-check";
     fetch(url, {
         method: 'GET', // *GET, POST, PUT, DELETE, etc.
-        mode: 'cors', // no-cors, *cors, same-origin
+        //mode: 'cors', // no-cors, *cors, same-origin
         cache: 'no-cache', // *default, no-cache, reload, force-cache, only-if-cached
-        credentials: 'same-origin', // include, *same-origin, omit
+        //credentials: 'same-origin', // include, *same-origin, omit
         headers: {
             'Content-Type': 'application/json',
             //'Authorization': window.sessionToken

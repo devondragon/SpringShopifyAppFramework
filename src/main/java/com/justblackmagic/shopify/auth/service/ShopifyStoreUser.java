@@ -48,14 +48,14 @@ public class ShopifyStoreUser implements OAuth2User, Serializable {
 	 * 
 	 * @param name The full domain name
 	 * @param accessToken The raw OAuth token
-	 * @param apiKey The api key of this app
+	 * @param clientId The Shopify client id of this app
 	 * @param authorities The authorities granted to the app
 	 */
-	public ShopifyStoreUser(String name, String accessToken, String apiKey, Collection<? extends GrantedAuthority> authorities) {
+	public ShopifyStoreUser(String name, String accessToken, String clientId, Collection<? extends GrantedAuthority> authorities) {
 		this.name = name;
 		this.attributes = new HashMap<>();
 		this.attributes.put(ACCESS_TOKEN_KEY, accessToken);
-		this.attributes.put(API_KEY, apiKey);
+		this.attributes.put(API_KEY, clientId);
 		this.authorities = authorities == null ? new ArrayList<>() : authorities;
 	}
 

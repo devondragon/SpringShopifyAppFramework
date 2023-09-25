@@ -42,7 +42,7 @@ public class ShopifyUserService implements OAuth2UserService<OAuth2UserRequest, 
 			shopName = httpSession.getAttribute(AuthConstants.SHOP_ATTRIBUE_NAME);
 		}
 		log.debug("loadUser:shopName: {}", shopName);
-		String apiKey = userRequest.getClientRegistration().getClientId();
+		String shopifyClientId = userRequest.getClientRegistration().getClientId();
 
 		Set<String> scopes = userRequest.getAccessToken().getScopes();
 		Collection<GrantedAuthority> authorities = null;
@@ -50,7 +50,7 @@ public class ShopifyUserService implements OAuth2UserService<OAuth2UserRequest, 
 			authorities = scopes.stream().map(scope -> new SimpleGrantedAuthority(scope)).collect(Collectors.toList());
 		}
 
-		return new ShopifyStoreUser((String) shopName, userRequest.getAccessToken().getTokenValue(), apiKey, authorities);
+		return new ShopifyStoreUser((String) shopName, userRequest.getAccessToken().getTokenValue(), shopifyClientId, authorities);
 	}
 
 }

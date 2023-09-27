@@ -1,5 +1,10 @@
 # Spring Shopify App Framework
 
+## WARNING!!!!
+This project is currently not in a relabilly working state.  Please review this issue for details - https://github.com/devondragon/SpringShopifyAppFramework/issues/38
+
+It works SOMETIMES, but not reliablly.  There is a gist with code provided by a user of the framework which avoids the CORS/CSP issue by moving the auth check and OAuth redirect to the server side, and avoid iFrame related issues.  I have not tested this myself, and I do not know if it is a viable approach for passing the Shopify App review process.  But it may be great! - https://gist.github.com/devondragon/e38e2b23e5d99fb344cc0fd2509914ba
+
 ## Summary
 This Spring Boot and Spring Security based application provides a platform for building Shopfiy Apps using Java/Spring.  
 

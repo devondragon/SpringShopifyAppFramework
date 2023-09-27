@@ -43,3 +43,4 @@ You will need to add actual functionality to each of these Webhook controllers u
 
 We based our REST API client on the great work by ChannelApe - https://github.com/ChannelApe/shopify-sdk, however we have rewriten most of the code there in to be compatible with the current API version "2021-10", used Lombok to remove boilerplate code, converted everything from XML library annotations to modern JSON annotations.
 
+ 

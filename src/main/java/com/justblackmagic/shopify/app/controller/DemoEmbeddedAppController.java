@@ -2,6 +2,7 @@ package com.justblackmagic.shopify.app.controller;
 
 import java.security.Principal;
 import java.util.Base64;
+import java.util.Enumeration;
 import java.util.List;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
@@ -10,6 +11,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.security.oauth2.client.authentication.OAuth2AuthenticationToken;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
+import org.springframework.web.bind.annotation.CrossOrigin;
 import org.springframework.web.bind.annotation.GetMapping;
 import com.justblackmagic.shopify.api.graphql.ShopifyGraphQLClientService;
 import com.justblackmagic.shopify.api.rest.ShopifyRestClientService;
@@ -21,14 +23,17 @@ import com.justblackmagic.shopify.auth.util.JWTUtil;
 import io.jsonwebtoken.MalformedJwtException;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
+import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 
 @Slf4j
 @Controller
+@CrossOrigin(origins = "https://admin.shopify.com", maxAge = 3600)
+@RequiredArgsConstructor
 public class DemoEmbeddedAppController {
 
     @Autowired
-    private ShopifyRestClientService shopifyRestClientService;
+    final private ShopifyRestClientService shopifyRestClientService;
 
     @Autowired
     ShopifyGraphQLClientService shopifyGraphQLClientService;
@@ -41,7 +46,6 @@ public class DemoEmbeddedAppController {
 
     @Autowired
     private JWTUtil jwtUtil;
-
 
     /**
      * @param principal
@@ -59,9 +63,13 @@ public class DemoEmbeddedAppController {
         if (client != null) {
             List<ShopifyProduct> products =
                     shopifyRestClientService.getShopifyRestClient(client.getPrincipalName(), client.getAccessTokenValue()).getProducts().values();
-            List<ShopifyProduct> twoProducts = products.subList(0, 2);
-            log.debug("products: {}", twoProducts.toString());
-            return ResponseEntity.ok(twoProducts);
+            if (products != null && products.size() > 2) {
+                List<ShopifyProduct> twoProducts = products.subList(0, 2);
+                log.debug("products: {}", twoProducts.toString());
+                return ResponseEntity.ok(twoProducts);
+            } else {
+                return ResponseEntity.ok(products);
+            }
         } else {
             return ResponseEntity.badRequest().build();
         }
@@ -69,15 +77,17 @@ public class DemoEmbeddedAppController {
 
 
     /**
+     * This method gets the AuthorizedClient for this Shop, if it has already been installed/authorized. Otherwise, it returns null.
+     * 
      * @param request
      * @return AuthorizedClient
      */
     public AuthorizedClient getClientFromRequest(final HttpServletRequest request) {
-        // for (Enumeration<?> e = request.getHeaderNames(); e.hasMoreElements();) {
-        // String nextHeaderName = (String) e.nextElement();
-        // String headerValue = request.getHeader(nextHeaderName);
-        // log.debug("Header: {} = {}", nextHeaderName, headerValue);
-        // }
+        for (Enumeration<?> e = request.getHeaderNames(); e.hasMoreElements();) {
+            String nextHeaderName = (String) e.nextElement();
+            String headerValue = request.getHeader(nextHeaderName);
+            log.debug("Header: {} = {}", nextHeaderName, headerValue);
+        }
         String token = request.getHeader("Authorization");
         if (token != null) {
             log.debug("Authorization: {}", token);
@@ -98,8 +108,37 @@ public class DemoEmbeddedAppController {
         return null;
     }
 
+    /**
+     * This method gets the AuthorizedClient for this Shop, if it has already been installed/authorized. Otherwise, it returns null.
+     * 
+     * @param shopname
+     * @return AuthorizedClient
+     */
+    public AuthorizedClient getClientFromShopName(final String shopName) {
+        log.debug("Shop name: {}", shopName);
+        if (shopName != null) {
+            AuthorizedClient client = authorizedClientRepository.findByPrincipalName(shopName);
+            if (client != null) {
+                return client;
+            } else {
+                // This isn't an error, it happens if the App has not been installed to the Shop yet.
+                log.debug("No client found for shop name: {}", shopName);
+            }
+        }
+        return null;
+    }
+
+    /**
+     * This method gets the Shopify Shop name from the request. The authorization request header can either contain a JWT token, which has the shop
+     * name encoded within, which we check for first, or it can contain the host name of the shop encoded in Base64, which we decode and use as the
+     * shop name.
+     * 
+     * @param request
+     * @return String
+     */
     private String getShopNameFromRequest(final HttpServletRequest request) {
         String token = request.getHeader("Authorization");
+        log.debug("getShopNameFromRequest: token: {}", token);
         if (token != null) {
             log.debug("Authorization: {}", token);
             String shopName = null;
@@ -110,8 +149,8 @@ public class DemoEmbeddedAppController {
                     shopName = shopName.replace("https://", "");
                 }
             } catch (MalformedJwtException e) {
-                // This likely means we got passed the host variable instead of the token
-                log.debug("MalformedJwtException. Going to try to get the client from the host");
+                // This likely means we got passed a Based64 encoded shop name instead of a JWT token
+                log.debug("MalformedJwtException. This is normal for initial auth. Going to try to get the shopname from the header value");
                 byte[] decodedBytes = Base64.getDecoder().decode(token);
                 shopName = new String(decodedBytes);
                 log.debug("host decoded to shopName: {}", shopName);
@@ -153,6 +192,10 @@ public class DemoEmbeddedAppController {
                 log.debug("dashEmbedded: shopName: {}", shopName);
                 model.addAttribute("shopName", shopName);
                 response.setHeader("Content-Security-Policy", "frame-ancestors https://" + shopName + " https://admin.shopify.com;");
+                response.setHeader("Access-Control-Allow-Origin", "https://admin.shopify.com https://shopifytest.ngrok.io;");
+                response.setHeader("Access-Control-Allow-Methods", "GET, POST, PUT, DELETE, OPTIONS");
+                response.setHeader("Access-Control-Allow-Headers", "Authorization, Content-Type, Accept, X-Requested-With, remember-me");
+                response.setHeader("Access-Control-Allow-Credentials", "true");
             }
         }
         if (principal != null) {
@@ -164,6 +207,10 @@ public class DemoEmbeddedAppController {
                 String shopName = user.getName();
                 model.addAttribute("shopName", shopName);
                 response.setHeader("Content-Security-Policy", "frame-ancestors https://" + shopName + " https://admin.shopify.com;");
+                response.setHeader("Access-Control-Allow-Origin", "https://admin.shopify.com https://shopifytest.ngrok.io;");
+                response.setHeader("Access-Control-Allow-Methods", "GET, POST, PUT, DELETE, OPTIONS");
+                response.setHeader("Access-Control-Allow-Headers", "Authorization, Content-Type, Accept, X-Requested-With, remember-me");
+                response.setHeader("Access-Control-Allow-Credentials", "true");
             }
         }
         return "dash-embedded";
@@ -183,8 +230,15 @@ public class DemoEmbeddedAppController {
         log.info("embeddedAuthCheck()");
         String shopName = getShopNameFromRequest(request);
         response.setHeader("Content-Security-Policy", "frame-ancestors https://" + shopName + " https://admin.shopify.com;");
-        AuthorizedClient client = getClientFromRequest(request);
+        response.setHeader("Access-Control-Allow-Origin", "https://admin.shopify.com https://shopifytest.ngrok.io;");
+        response.setHeader("Access-Control-Allow-Methods", "GET, POST, PUT, DELETE, OPTIONS");
+        response.setHeader("Access-Control-Allow-Headers", "Authorization, Content-Type, Accept, X-Requested-With, remember-me");
+        response.setHeader("Access-Control-Allow-Credentials", "true");
+
+        AuthorizedClient client = getClientFromShopName(shopName);
         if (client == null) {
+            // This is the case where the app has not been installed yet. We will redirect to the oauth2/authorization endpoint to start the
+            // installation process.
             log.debug("embedded-auth-check: client is null");
             AuthCheckResponse responseObj = new AuthCheckResponse();
             responseObj.setScopes(shopifyScopes);
@@ -193,6 +247,7 @@ public class DemoEmbeddedAppController {
             responseObj.setShopName(shopName);
             return ResponseEntity.ok(responseObj);
         } else {
+            // This is the case where the app has been isntalled and authorized. We will return the scopes and shop name.
             model.addAttribute("shopName", client.getPrincipalName());
             AuthCheckResponse responseObj = new AuthCheckResponse();
             responseObj.setScopes(shopifyScopes);

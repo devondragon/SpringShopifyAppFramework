@@ -4,5 +4,8 @@
     "java.import.gradle.java.home": "/Library/Java/JavaVirtualMachines/zulu-17.jdk/Contents/Home",
     "java.configuration.runtimes": [],
     "terminal.integrated.altClickMovesCursor": false,
-    "java.compile.nullAnalysis.mode": "automatic"
+    "java.compile.nullAnalysis.mode": "automatic",
+    "githubPullRequests.ignoredPullRequestBranches": [
+        "main"
+    ]
 }

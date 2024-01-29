@@ -50,7 +50,7 @@ dependencies {
 
     implementation 'io.jsonwebtoken:jjwt-api:0.12.3'
     runtimeOnly 'io.jsonwebtoken:jjwt-impl:0.12.4'
-	runtimeOnly 'io.jsonwebtoken:jjwt-jackson:0.12.3'
+	runtimeOnly 'io.jsonwebtoken:jjwt-jackson:0.12.4'
 
 	compileOnly 'org.projectlombok:lombok'
 	runtimeOnly 'org.mariadb.jdbc:mariadb-java-client:3.3.2'

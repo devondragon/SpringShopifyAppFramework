@@ -1,6 +1,10 @@
 package com.justblackmagic.shopify.auth.util;
 
+import java.nio.charset.StandardCharsets;
+import java.util.Base64;
 import java.util.Objects;
+import javax.crypto.SecretKey;
+import javax.crypto.spec.SecretKeySpec;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 import io.jsonwebtoken.Claims;
@@ -29,9 +33,9 @@ public class JWTUtil {
 
         String shop = "";
         try {
-            final Jws<Claims> claims = Jwts.parserBuilder().setSigningKey(clientSecret.getBytes()).build().parseClaimsJws(token);
-            String shopName = (String) claims.getBody().get("dest");
-            log.debug("Parsed JWT token body: {}", claims.getBody());
+            final Jws<Claims> claims = Jwts.parser().verifyWith(getSignInKey()).build().parseSignedClaims(token);
+            String shopName = (String) claims.getPayload().get("dest");
+            log.debug("Parsed JWT token body: {}", claims.getPayload());
             log.debug("Extracted shop name: {}", shopName);
             shop = shopName;
         } catch (JwtException e) {
@@ -39,6 +43,11 @@ public class JWTUtil {
             throw (e);
         }
         return shop;
+    }
+
+    private SecretKey getSignInKey() {
+        byte[] bytes = Base64.getDecoder().decode(clientSecret.getBytes(StandardCharsets.UTF_8));
+        return new SecretKeySpec(bytes, "HmacSHA256");
     }
 
 }

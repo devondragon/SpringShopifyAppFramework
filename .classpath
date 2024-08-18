@@ -39,7 +39,7 @@
 			<attribute name="gradle.buildServer" value="true"/>
 		</attributes>
 	</classpathentry>
-	<classpathentry kind="con" path="org.eclipse.jdt.launching.JRE_CONTAINER/org.eclipse.jdt.internal.launching.macosx.MacOSXType/JavaSE-17">
+	<classpathentry kind="con" path="org.eclipse.jdt.launching.JRE_CONTAINER/org.eclipse.jdt.internal.launching.macosx.MacOSXType/Java SE 17.0.8 [17.0.8]">
 		<attributes>
 			<attribute name="gradle.buildServer" value="true"/>
 		</attributes>
@@ -50,6 +50,11 @@
 		</attributes>
 	</classpathentry>
 	<classpathentry kind="lib" path="/Users/devon/.gradle/caches/modules-2/files-2.1/org.glassfish.hk2/hk2-locator/3.0.6/92d5c92c9f23bea4b8681c6f8d6ba3d708619f81/hk2-locator-3.0.6.jar" sourcepath="/Users/devon/.gradle/caches/modules-2/files-2.1/org.glassfish.hk2/hk2-locator/3.0.6/73b87bb52b35d1d3ad8eafc751967b246f3b55cd/hk2-locator-3.0.6-sources.jar">
+		<attributes>
+			<attribute name="gradle.buildServer" value="true"/>
+		</attributes>
+	</classpathentry>
+	<classpathentry kind="lib" path="/Users/devon/.gradle/caches/modules-2/files-2.1/org.checkerframework/checker-qual/3.43.0/9425eee39e56b116d2b998b7c2cebcbd11a3c98b/checker-qual-3.43.0.jar" sourcepath="/Users/devon/.gradle/caches/modules-2/files-2.1/org.checkerframework/checker-qual/3.43.0/dfd1d5ec59d04e7bd1ad44e74da445b880cfc2e1/checker-qual-3.43.0-sources.jar">
 		<attributes>
 			<attribute name="gradle.buildServer" value="true"/>
 		</attributes>
@@ -104,6 +109,11 @@
 			<attribute name="gradle.buildServer" value="true"/>
 		</attributes>
 	</classpathentry>
+	<classpathentry kind="lib" path="/Users/devon/.gradle/caches/modules-2/files-2.1/org.apache.commons/commons-lang3/3.16.0/3eb54effe40946dfb06dc5cd6c7ce4116cd51ea4/commons-lang3-3.16.0.jar" sourcepath="/Users/devon/.gradle/caches/modules-2/files-2.1/org.apache.commons/commons-lang3/3.16.0/1178f62ed2aec3d255e2859d367f98ef6541026d/commons-lang3-3.16.0-sources.jar">
+		<attributes>
+			<attribute name="gradle.buildServer" value="true"/>
+		</attributes>
+	</classpathentry>
 	<classpathentry kind="lib" path="/Users/devon/.gradle/caches/modules-2/files-2.1/org.springframework.security/spring-security-web/6.3.1/aff43933f28c808252b2d31f768b92fa61b634f6/spring-security-web-6.3.1.jar" sourcepath="/Users/devon/.gradle/caches/modules-2/files-2.1/org.springframework.security/spring-security-web/6.3.1/80340dc1bdde9b174d17bcf766378572e766b303/spring-security-web-6.3.1-sources.jar">
 		<attributes>
 			<attribute name="gradle.buildServer" value="true"/>
@@ -125,11 +135,6 @@
 		</attributes>
 	</classpathentry>
 	<classpathentry kind="lib" path="/Users/devon/.gradle/caches/modules-2/files-2.1/com.github.rholder/guava-retrying/2.0.0/974bc0a04a11cc4806f7c20a34703bd23c34e7f4/guava-retrying-2.0.0.jar" sourcepath="/Users/devon/.gradle/caches/modules-2/files-2.1/com.github.rholder/guava-retrying/2.0.0/e26af7bfb282fa2787191f383950f030243c5480/guava-retrying-2.0.0-sources.jar">
-		<attributes>
-			<attribute name="gradle.buildServer" value="true"/>
-		</attributes>
-	</classpathentry>
-	<classpathentry kind="lib" path="/Users/devon/.gradle/caches/modules-2/files-2.1/com.google.guava/guava/33.2.1-jre/818e780da2c66c63bbb6480fef1f3855eeafa3e4/guava-33.2.1-jre.jar" sourcepath="/Users/devon/.gradle/caches/modules-2/files-2.1/com.google.guava/guava/33.2.1-jre/b49b0b2d97a0eae57d70d6871d150f2940b933c8/guava-33.2.1-jre-sources.jar">
 		<attributes>
 			<attribute name="gradle.buildServer" value="true"/>
 		</attributes>
@@ -429,6 +434,11 @@
 			<attribute name="gradle.buildServer" value="true"/>
 		</attributes>
 	</classpathentry>
+	<classpathentry kind="lib" path="/Users/devon/.gradle/caches/modules-2/files-2.1/com.google.guava/guava/33.3.0-jre/13b4d0924e6023eda04b4c7aa83b32dfedf735a7/guava-33.3.0-jre.jar" sourcepath="/Users/devon/.gradle/caches/modules-2/files-2.1/com.google.guava/guava/33.3.0-jre/1d046d01f0c3f02ae264c91e9032695579517473/guava-33.3.0-jre-sources.jar">
+		<attributes>
+			<attribute name="gradle.buildServer" value="true"/>
+		</attributes>
+	</classpathentry>
 	<classpathentry kind="lib" path="/Users/devon/.gradle/caches/modules-2/files-2.1/org.thymeleaf.extras/thymeleaf-extras-springsecurity5/3.1.2.RELEASE/941c9194049d46c3d38204a87359cb51e1085fb8/thymeleaf-extras-springsecurity5-3.1.2.RELEASE.jar" sourcepath="/Users/devon/.gradle/caches/modules-2/files-2.1/org.thymeleaf.extras/thymeleaf-extras-springsecurity5/3.1.2.RELEASE/db7663bf9b0bffdd623dc9bef1b60a1f96550088/thymeleaf-extras-springsecurity5-3.1.2.RELEASE-sources.jar">
 		<attributes>
 			<attribute name="gradle.buildServer" value="true"/>
@@ -514,11 +524,6 @@
 			<attribute name="gradle.buildServer" value="true"/>
 		</attributes>
 	</classpathentry>
-	<classpathentry kind="lib" path="/Users/devon/.gradle/caches/modules-2/files-2.1/org.apache.commons/commons-lang3/3.15.0/21581109b4be710ea4b195d5760392ec284f9f11/commons-lang3-3.15.0.jar" sourcepath="/Users/devon/.gradle/caches/modules-2/files-2.1/org.apache.commons/commons-lang3/3.15.0/636af5bee1fce148e8995cdc9d57f534e876b523/commons-lang3-3.15.0-sources.jar">
-		<attributes>
-			<attribute name="gradle.buildServer" value="true"/>
-		</attributes>
-	</classpathentry>
 	<classpathentry kind="lib" path="/Users/devon/.gradle/caches/modules-2/files-2.1/org.hdrhistogram/HdrHistogram/2.2.2/7959933ebcc0f05b2eaa5af0a0c8689fa257b15c/HdrHistogram-2.2.2.jar" sourcepath="/Users/devon/.gradle/caches/modules-2/files-2.1/org.hdrhistogram/HdrHistogram/2.2.2/98d2938c622fbb34db0374c9c720233f702183ac/HdrHistogram-2.2.2-sources.jar">
 		<attributes>
 			<attribute name="gradle.buildServer" value="true"/>
@@ -530,6 +535,11 @@
 		</attributes>
 	</classpathentry>
 	<classpathentry kind="lib" path="/Users/devon/.gradle/caches/modules-2/files-2.1/io.netty/netty-common/4.1.111.Final/58210befcb31adbcadd5724966a061444db91863/netty-common-4.1.111.Final.jar" sourcepath="/Users/devon/.gradle/caches/modules-2/files-2.1/io.netty/netty-common/4.1.111.Final/1478436505b2fdb57bcc6638f0f0a18ffef1a332/netty-common-4.1.111.Final-sources.jar">
+		<attributes>
+			<attribute name="gradle.buildServer" value="true"/>
+		</attributes>
+	</classpathentry>
+	<classpathentry kind="lib" path="/Users/devon/.gradle/caches/modules-2/files-2.1/com.google.errorprone/error_prone_annotations/2.28.0/59fc00087ce372de42e394d2c789295dff2d19f0/error_prone_annotations-2.28.0.jar" sourcepath="/Users/devon/.gradle/caches/modules-2/files-2.1/com.google.errorprone/error_prone_annotations/2.28.0/e8f57b15a91d274ff61195e53e9762f3232c690f/error_prone_annotations-2.28.0-sources.jar">
 		<attributes>
 			<attribute name="gradle.buildServer" value="true"/>
 		</attributes>
@@ -719,17 +729,7 @@
 			<attribute name="gradle.buildServer" value="true"/>
 		</attributes>
 	</classpathentry>
-	<classpathentry kind="lib" path="/Users/devon/.gradle/caches/modules-2/files-2.1/com.google.errorprone/error_prone_annotations/2.26.1/c1fde57694bdc14e8618899aaa6e857d9465d7de/error_prone_annotations-2.26.1.jar" sourcepath="/Users/devon/.gradle/caches/modules-2/files-2.1/com.google.errorprone/error_prone_annotations/2.26.1/b6d2491085a2ca4d152f3937f45009c23d928ef9/error_prone_annotations-2.26.1-sources.jar">
-		<attributes>
-			<attribute name="gradle.buildServer" value="true"/>
-		</attributes>
-	</classpathentry>
 	<classpathentry kind="lib" path="/Users/devon/.gradle/caches/modules-2/files-2.1/org.glassfish.jaxb/jaxb-runtime/4.0.5/ca84c2a7169b5293e232b9d00d1e4e36d4c3914a/jaxb-runtime-4.0.5.jar" sourcepath="/Users/devon/.gradle/caches/modules-2/files-2.1/org.glassfish.jaxb/jaxb-runtime/4.0.5/9d752b55085e48d962a21cc23a6b127a373c84e8/jaxb-runtime-4.0.5-sources.jar">
-		<attributes>
-			<attribute name="gradle.buildServer" value="true"/>
-		</attributes>
-	</classpathentry>
-	<classpathentry kind="lib" path="/Users/devon/.gradle/caches/modules-2/files-2.1/org.checkerframework/checker-qual/3.42.0/638ec33f363a94d41a4f03c3e7d3dcfba64e402d/checker-qual-3.42.0.jar" sourcepath="/Users/devon/.gradle/caches/modules-2/files-2.1/org.checkerframework/checker-qual/3.42.0/49cc9a760cebbbcd13be06679a224a1ecc85f884/checker-qual-3.42.0-sources.jar">
 		<attributes>
 			<attribute name="gradle.buildServer" value="true"/>
 		</attributes>

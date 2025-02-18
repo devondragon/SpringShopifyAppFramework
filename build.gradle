@@ -53,7 +53,7 @@ dependencies {
 	runtimeOnly 'io.jsonwebtoken:jjwt-jackson:0.12.6'
 
 	compileOnly 'org.projectlombok:lombok'
-	runtimeOnly 'org.mariadb.jdbc:mariadb-java-client:3.5.1'
+	runtimeOnly 'org.mariadb.jdbc:mariadb-java-client:3.5.2'
 
 	developmentOnly 'org.springframework.boot:spring-boot-devtools'
 	// runtimeOnly 'io.micrometer:micrometer-registry-new-relic'

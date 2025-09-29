@@ -39,7 +39,7 @@ dependencies {
 	implementation 'nz.net.ultraq.thymeleaf:thymeleaf-layout-dialect:3.4.0'
 	implementation 'org.springframework.boot:spring-boot-starter-webflux'
 	implementation 'joda-time:joda-time:2.14.0'
-	implementation 'org.apache.commons:commons-lang3:3.18.0'
+	implementation 'org.apache.commons:commons-lang3:3.19.0'
 	implementation 'org.apache.commons:commons-text:1.14.0'
 	implementation 'com.github.rholder:guava-retrying:2.0.0'
 	implementation 'com.fasterxml.jackson.jakarta.rs:jackson-jakarta-rs-json-provider:2.20.0'

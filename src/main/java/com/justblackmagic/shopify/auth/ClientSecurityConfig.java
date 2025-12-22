@@ -5,36 +5,32 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
-import org.springframework.http.converter.FormHttpMessageConverter;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
 import org.springframework.security.oauth2.client.OAuth2AuthorizedClientService;
-import org.springframework.security.oauth2.client.endpoint.DefaultAuthorizationCodeTokenResponseClient;
 import org.springframework.security.oauth2.client.endpoint.OAuth2AccessTokenResponseClient;
 import org.springframework.security.oauth2.client.endpoint.OAuth2AuthorizationCodeGrantRequest;
-import org.springframework.security.oauth2.client.http.OAuth2ErrorResponseErrorHandler;
 import org.springframework.security.oauth2.client.registration.ClientRegistrationRepository;
 import org.springframework.security.oauth2.client.userinfo.OAuth2UserRequest;
 import org.springframework.security.oauth2.client.userinfo.OAuth2UserService;
 import org.springframework.security.oauth2.client.web.OAuth2AuthorizedClientRepository;
 import org.springframework.security.oauth2.client.web.reactive.function.client.ServletOAuth2AuthorizedClientExchangeFilterFunction;
-import org.springframework.security.oauth2.core.http.converter.OAuth2AccessTokenResponseHttpMessageConverter;
 import org.springframework.security.oauth2.core.user.OAuth2User;
 import org.springframework.security.web.SecurityFilterChain;
 import org.springframework.security.web.authentication.AuthenticationSuccessHandler;
-import org.springframework.web.client.RestTemplate;
 import org.springframework.web.reactive.function.client.WebClient;
-import com.justblackmagic.shopify.auth.customization.CustomRequestEntityConverter;
-import com.justblackmagic.shopify.auth.customization.CustomTokenResponseConverter;
 import com.justblackmagic.shopify.auth.customization.ShopifyOAuth2AuthorizationRequestResolver;
 import com.justblackmagic.shopify.auth.customization.ShopifyOAuthAuthenticationSuccessHandler;
+import com.justblackmagic.shopify.auth.customization.ShopifyTokenResponseClient;
 import com.justblackmagic.shopify.auth.service.JPAOAuth2AuthorizedClientService;
 import com.justblackmagic.shopify.auth.service.ShopifyUserService;
 import lombok.extern.slf4j.Slf4j;
 
 /**
  * Configure Spring Security to use our custom Shopify OAuth2 implementation.
- * 
+ *
+ * Updated for Spring Security 7.0 / Spring Boot 4.0
+ *
  * @author justblackmagic
  */
 @Configuration
@@ -67,22 +63,6 @@ public class ClientSecurityConfig {
 		return http.build();
 	}
 
-	// /**
-	// * @param http
-	// * @throws Exception
-	// */
-	// @Override
-	// rotected void configure(HttpSecurity http) throws Exception {
-	// log.info("Configuring Spring Security...");
-	// log.info("Unprotected URIs: {}", Arrays.toString(unprotectedURIsArray));
-	// tp.authorizeRequests().antMatchers(unprotectedURIsArray).permitAll().anyRequest().authenticated().and().oauth2Login()
-	// .successHandler(shopifyOAuthAuthenticationSuccessHandler()).authorizationEndpoint()
-	// .authorizationRequestResolver(new ShopifyOAuth2AuthorizationRequestResolver(this.clientRegistrationRepository)).and().and().logout()
-	// .logoutSuccessUrl("/").and().oauth2Login().tokenEndpoint().accessTokenResponseClient(accessTokenResponseClient()).and()
-	// .userInfoEndpoint().userService(getUserService());
-	//
-
-
 
 	/**
 	 * @param clientRegistrationRepository
@@ -99,20 +79,13 @@ public class ClientSecurityConfig {
 
 
 	/**
+	 * Creates the OAuth2 access token response client using our custom Shopify implementation.
+	 *
 	 * @return OAuth2AccessTokenResponseClient<OAuth2AuthorizationCodeGrantRequest>
 	 */
 	@Bean
 	public OAuth2AccessTokenResponseClient<OAuth2AuthorizationCodeGrantRequest> accessTokenResponseClient() {
-		DefaultAuthorizationCodeTokenResponseClient accessTokenResponseClient = new DefaultAuthorizationCodeTokenResponseClient();
-		accessTokenResponseClient.setRequestEntityConverter(new CustomRequestEntityConverter());
-
-		OAuth2AccessTokenResponseHttpMessageConverter tokenResponseHttpMessageConverter = new OAuth2AccessTokenResponseHttpMessageConverter();
-		tokenResponseHttpMessageConverter.setAccessTokenResponseConverter(new CustomTokenResponseConverter());
-		RestTemplate restTemplate = new RestTemplate(Arrays.asList(new FormHttpMessageConverter(), tokenResponseHttpMessageConverter));
-		restTemplate.setErrorHandler(new OAuth2ErrorResponseErrorHandler());
-
-		accessTokenResponseClient.setRestOperations(restTemplate);
-		return accessTokenResponseClient;
+		return new ShopifyTokenResponseClient();
 	}
 
 

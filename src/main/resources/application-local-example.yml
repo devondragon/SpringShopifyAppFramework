@@ -7,6 +7,9 @@ spring:
   application:
     admin:
       enabled: true
+  devtools:
+    livereload:
+      enabled: true
 
 logging:
   level:

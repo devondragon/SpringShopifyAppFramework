@@ -12,8 +12,8 @@ import java.util.Set;
 import java.util.stream.Collectors;
 import org.apache.commons.lang3.StringUtils;
 import org.apache.commons.text.StringEscapeUtils;
-import org.joda.time.DateTime;
-import org.joda.time.DateTimeZone;
+import java.time.ZonedDateTime;
+import java.time.ZoneOffset;
 
 public class ShopifyProductUpdateRequest implements ShopifyProductRequest {
 
@@ -333,7 +333,7 @@ public class ShopifyProductUpdateRequest implements ShopifyProductRequest {
 		@Override
 		public BuildStep withPublished(boolean published) {
 			if (shopifyProduct.isPublished() != published) {
-				final String publishedAt = published ? DateTime.now(DateTimeZone.UTC).toString() : null;
+				final String publishedAt = published ? ZonedDateTime.now(ZoneOffset.UTC).toString() : null;
 				shopifyProduct.setPublishedAt(publishedAt);
 				shopifyProduct.setPublished(published);
 				changed = true;

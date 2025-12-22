@@ -10,7 +10,7 @@ import com.fasterxml.jackson.databind.annotation.JsonDeserialize;
 import com.fasterxml.jackson.databind.annotation.JsonSerialize;
 import com.justblackmagic.shopify.api.rest.model.serializer.CurrencyDeserializer;
 import com.justblackmagic.shopify.api.rest.model.serializer.CurrencySerializer;
-import org.joda.time.DateTime;
+import java.time.ZonedDateTime;
 import lombok.Data;
 import lombok.extern.slf4j.Slf4j;
 
@@ -21,11 +21,11 @@ public class ShopifyOrder {
 	private String id;
 	private String email;
 	@JsonProperty("closed_at")
-	private DateTime closedAt;
+	private ZonedDateTime closedAt;
 	@JsonProperty("created_at")
-	private DateTime createdAt;
+	private ZonedDateTime createdAt;
 	@JsonProperty("updated_at")
-	private DateTime updatedAt;
+	private ZonedDateTime updatedAt;
 	private int number;
 	private String note;
 	private String token;
@@ -58,7 +58,7 @@ public class ShopifyOrder {
 	@JsonProperty("landing_site")
 	private String landingSite;
 	@JsonProperty("cancelled_at")
-	private DateTime cancelledAt;
+	private ZonedDateTime cancelledAt;
 	@JsonProperty("cancel_reason")
 	private String cancelReason;
 	@JsonProperty("user_id")
@@ -66,7 +66,7 @@ public class ShopifyOrder {
 	@JsonProperty("location_id")
 	private String locationId;
 	@JsonProperty("processed_at")
-	private DateTime processedAt;
+	private ZonedDateTime processedAt;
 	@JsonProperty("browser_ip")
 	private String browserIp;
 	@JsonProperty("order_number")

@@ -8,8 +8,8 @@ import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
-import org.joda.time.DateTime;
-import org.joda.time.DateTimeZone;
+import java.time.ZonedDateTime;
+import java.time.ZoneOffset;
 
 public class ShopifyProductCreationRequest implements ShopifyProductRequest {
 
@@ -228,7 +228,7 @@ public class ShopifyProductCreationRequest implements ShopifyProductRequest {
 
 		@Override
 		public BuildStep withPublished(final boolean published) {
-			final String publishedAt = published ? DateTime.now(DateTimeZone.UTC).toString() : null;
+			final String publishedAt = published ? ZonedDateTime.now(ZoneOffset.UTC).toString() : null;
 			shopifyProduct.setPublishedAt(publishedAt);
 			return this;
 		}

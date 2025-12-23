@@ -10,6 +10,7 @@ import com.justblackmagic.shopify.api.rest.ShopifyRestClient;
 import com.justblackmagic.shopify.api.rest.ShopifyRestClientService;
 import com.justblackmagic.shopify.api.rest.model.ShopifyProducts;
 import com.justblackmagic.shopify.auth.service.ShopifyStoreUser;
+import com.justblackmagic.shopify.auth.util.ShopifyValidation;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import lombok.extern.slf4j.Slf4j;
@@ -64,7 +65,13 @@ public class DemoStandaloneAppController {
                 String shopName = request.getAttribute("shopName").toString();
                 log.debug("dash: shopName: {}", shopName);
                 model.addAttribute("shopName", shopName);
-                response.setHeader("Content-Security-Policy", "frame-ancestors https://" + shopName + " https://admin.shopify.com;");
+                try {
+                    String sanitizedShopName = ShopifyValidation.sanitizeShopName(shopName);
+                    response.setHeader("Content-Security-Policy", "frame-ancestors https://" + sanitizedShopName + " https://admin.shopify.com;");
+                } catch (IllegalArgumentException e) {
+                    log.warn("Invalid shop name format: {}", shopName, e);
+                    response.setHeader("Content-Security-Policy", "frame-ancestors https://admin.shopify.com;");
+                }
             }
         }
         if (principal != null) {
@@ -75,7 +82,13 @@ public class DemoStandaloneAppController {
                 ShopifyStoreUser user = (ShopifyStoreUser) auth.getPrincipal();
                 String shopName = user.getName();
                 model.addAttribute("shopName", shopName);
-                response.setHeader("Content-Security-Policy", "frame-ancestors https://" + shopName + " https://admin.shopify.com;");
+                try {
+                    String sanitizedShopName = ShopifyValidation.sanitizeShopName(shopName);
+                    response.setHeader("Content-Security-Policy", "frame-ancestors https://" + sanitizedShopName + " https://admin.shopify.com;");
+                } catch (IllegalArgumentException e) {
+                    log.warn("Invalid shop name format: {}", shopName, e);
+                    response.setHeader("Content-Security-Policy", "frame-ancestors https://admin.shopify.com;");
+                }
             }
         }
 

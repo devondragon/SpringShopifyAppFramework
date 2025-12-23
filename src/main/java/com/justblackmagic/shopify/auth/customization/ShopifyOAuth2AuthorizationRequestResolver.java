@@ -76,7 +76,7 @@ public class ShopifyOAuth2AuthorizationRequestResolver implements OAuth2Authoriz
         // This block may be complately unnecessary
         Map<String, Object> additionalParameters = new HashMap<String, Object>();
         additionalParameters.putAll(authorizationRequest.getAdditionalParameters());
-        additionalParameters.put(AuthConstants.SHOP_ATTRIBUE_NAME, shopName);
+        additionalParameters.put(AuthConstants.SHOP_ATTRIBUTE_NAME, shopName);
 
         // Get the default auth URI and then replace the placeholder hostname with the shop name
         String authUri = authorizationRequest.getAuthorizationUri();
@@ -143,8 +143,8 @@ public class ShopifyOAuth2AuthorizationRequestResolver implements OAuth2Authoriz
         String shopName = null;
 
         // 1. Try session attribute
-        if (request.getSession() != null && request.getSession().getAttribute(AuthConstants.SHOP_ATTRIBUE_NAME) != null) {
-            shopName = request.getSession().getAttribute(AuthConstants.SHOP_ATTRIBUE_NAME).toString();
+        if (request.getSession() != null && request.getSession().getAttribute(AuthConstants.SHOP_ATTRIBUTE_NAME) != null) {
+            shopName = request.getSession().getAttribute(AuthConstants.SHOP_ATTRIBUTE_NAME).toString();
             log.debug("shopName from session: {}", shopName);
             return shopName;
         }
@@ -157,12 +157,12 @@ public class ShopifyOAuth2AuthorizationRequestResolver implements OAuth2Authoriz
         }
 
         // 3. Try direct 'shop' parameter
-        shopName = request.getParameter(AuthConstants.SHOP_ATTRIBUE_NAME);
+        shopName = request.getParameter(AuthConstants.SHOP_ATTRIBUTE_NAME);
         if (shopName != null && !shopName.isEmpty()) {
             log.debug("shopName from 'shop' parameter: {}", shopName);
             // Store in session for future requests
             if (request.getSession() != null) {
-                request.getSession().setAttribute(AuthConstants.SHOP_ATTRIBUE_NAME, shopName);
+                request.getSession().setAttribute(AuthConstants.SHOP_ATTRIBUTE_NAME, shopName);
             }
             return shopName;
         }
@@ -175,7 +175,7 @@ public class ShopifyOAuth2AuthorizationRequestResolver implements OAuth2Authoriz
                 log.debug("shopName extracted from 'host' parameter: {}", shopName);
                 // Store in session for future requests
                 if (request.getSession() != null) {
-                    request.getSession().setAttribute(AuthConstants.SHOP_ATTRIBUE_NAME, shopName);
+                    request.getSession().setAttribute(AuthConstants.SHOP_ATTRIBUTE_NAME, shopName);
                 }
                 return shopName;
             }

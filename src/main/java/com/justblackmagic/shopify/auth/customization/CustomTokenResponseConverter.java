@@ -9,6 +9,8 @@ import java.util.stream.Stream;
 
 import org.springframework.core.convert.converter.Converter;
 import org.springframework.security.oauth2.core.OAuth2AccessToken;
+import org.springframework.security.oauth2.core.OAuth2AuthorizationException;
+import org.springframework.security.oauth2.core.OAuth2Error;
 import org.springframework.security.oauth2.core.endpoint.OAuth2AccessTokenResponse;
 import org.springframework.security.oauth2.core.endpoint.OAuth2ParameterNames;
 import org.springframework.util.StringUtils;
@@ -40,6 +42,10 @@ public class CustomTokenResponseConverter implements Converter<Map<String, Objec
 		log.debug("CustomTokenResponseConverter.convert:" + "tokenResponseParameters: " + tokenResponseParameters.toString());
 
 		String accessToken = (String) tokenResponseParameters.get(OAuth2ParameterNames.ACCESS_TOKEN);
+		if (accessToken == null || accessToken.isEmpty()) {
+			throw new OAuth2AuthorizationException(
+					new OAuth2Error("invalid_token_response", "Missing access_token in Shopify response", null));
+		}
 
 		Set<String> scopes = Collections.emptySet();
 		if (tokenResponseParameters.containsKey(OAuth2ParameterNames.SCOPE)) {

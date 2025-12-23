@@ -1,7 +1,13 @@
 ---
 server:
   address: 127.0.0.1
-  
+  servlet:
+    session:
+      cookie:
+        secure: true
+        http-only: true
+        same-site: lax  # lax allows OAuth redirects while still preventing CSRF
+
 spring:
   thymeleaf:
     cache: true

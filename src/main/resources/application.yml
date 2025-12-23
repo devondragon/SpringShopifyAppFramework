@@ -25,7 +25,8 @@ shopify:
     tokenEncryptionKey: # Your encryption key, a 256 bit AES key, Base64 Encoded. You can get one here - https://www.digitalsanctuary.com/aes-key-generator-free
   security:
     # Note: For embedded apps, add /dash-embedded,/embedded-auth-check,/product-list to this list
-    unprotectedURIs: /,/index.html,/favicon.ico,/error,/css/*,/js/*,/dist/*,/img/*,/webhook/*
+    # Webhook endpoints are explicitly listed for security (principle of least privilege)
+    unprotectedURIs: /,/index.html,/favicon.ico,/error,/css/*,/js/*,/dist/*,/img/*,/webhook/uninstall,/webhook/gdpr/customer-delete,/webhook/gdpr/data-request,/webhook/gdpr/shop-delete
     authSuccessPage: /dash  # The page to redirect to after successful OAuth authentication
 
 spring:

@@ -24,6 +24,7 @@ shopify:
     client-secret: # Your Shopify App Client Secret
     tokenEncryptionKey: # Your encryption key, a 256 bit AES key, Base64 Encoded. You can get one here - https://www.digitalsanctuary.com/aes-key-generator-free
   security:
+    # Note: For embedded apps, add /dash-embedded,/embedded-auth-check,/product-list to this list
     unprotectedURIs: /,/index.html,/favicon.ico,/error,/css/*,/js/*,/dist/*,/img/*,/webhook/*
     authSuccessPage: /dash  # The page to redirect to after successful OAuth authentication
 

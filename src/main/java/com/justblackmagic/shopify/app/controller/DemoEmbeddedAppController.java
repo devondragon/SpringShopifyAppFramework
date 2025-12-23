@@ -32,6 +32,8 @@ import lombok.extern.slf4j.Slf4j;
 @RequiredArgsConstructor
 public class DemoEmbeddedAppController {
 
+    private static final String SHOPIFY_ADMIN_ORIGIN = "https://admin.shopify.com";
+
     @Autowired
     final private ShopifyRestClientService shopifyRestClientService;
 
@@ -43,6 +45,9 @@ public class DemoEmbeddedAppController {
 
     @Value("${spring.security.oauth2.client.registration.shopify.scope}")
     private String shopifyScopes;
+
+    @Value("${shopify.app.hostname:}")
+    private String appHostname;
 
     @Autowired
     private JWTUtil jwtUtil;
@@ -186,33 +191,28 @@ public class DemoEmbeddedAppController {
     public String dashEmbedded(Principal principal, Model model, HttpServletRequest request, HttpServletResponse response) {
         log.info("dashEmbedded()");
         log.debug("dashEmbedded: principal: {}", principal);
+        String shopName = null;
+
         if (principal == null) {
             if (request != null && request.getAttribute("shopName") != null) {
-                String shopName = request.getAttribute("shopName").toString();
-                log.debug("dashEmbedded: shopName: {}", shopName);
-                model.addAttribute("shopName", shopName);
-                response.setHeader("Content-Security-Policy", "frame-ancestors https://" + shopName + " https://admin.shopify.com;");
-                response.setHeader("Access-Control-Allow-Origin", "https://admin.shopify.com https://shopifytest.ngrok.io;");
-                response.setHeader("Access-Control-Allow-Methods", "GET, POST, PUT, DELETE, OPTIONS");
-                response.setHeader("Access-Control-Allow-Headers", "Authorization, Content-Type, Accept, X-Requested-With, remember-me");
-                response.setHeader("Access-Control-Allow-Credentials", "true");
+                shopName = request.getAttribute("shopName").toString();
+                log.debug("dashEmbedded: shopName from attribute: {}", shopName);
             }
-        }
-        if (principal != null) {
+        } else {
             log.debug("principal: {}", principal.toString());
             if (principal instanceof OAuth2AuthenticationToken) {
                 log.debug("dashEmbedded: principal found.");
                 OAuth2AuthenticationToken auth = (OAuth2AuthenticationToken) principal;
                 ShopifyStoreUser user = (ShopifyStoreUser) auth.getPrincipal();
-                String shopName = user.getName();
-                model.addAttribute("shopName", shopName);
-                response.setHeader("Content-Security-Policy", "frame-ancestors https://" + shopName + " https://admin.shopify.com;");
-                response.setHeader("Access-Control-Allow-Origin", "https://admin.shopify.com https://shopifytest.ngrok.io;");
-                response.setHeader("Access-Control-Allow-Methods", "GET, POST, PUT, DELETE, OPTIONS");
-                response.setHeader("Access-Control-Allow-Headers", "Authorization, Content-Type, Accept, X-Requested-With, remember-me");
-                response.setHeader("Access-Control-Allow-Credentials", "true");
+                shopName = user.getName();
             }
         }
+
+        if (shopName != null) {
+            model.addAttribute("shopName", shopName);
+            setCorsAndCspHeaders(request, response, shopName);
+        }
+
         return "dash-embedded";
     }
 
@@ -229,11 +229,7 @@ public class DemoEmbeddedAppController {
             HttpServletResponse response) {
         log.info("embeddedAuthCheck()");
         String shopName = getShopNameFromRequest(request);
-        response.setHeader("Content-Security-Policy", "frame-ancestors https://" + shopName + " https://admin.shopify.com;");
-        response.setHeader("Access-Control-Allow-Origin", "https://admin.shopify.com https://shopifytest.ngrok.io;");
-        response.setHeader("Access-Control-Allow-Methods", "GET, POST, PUT, DELETE, OPTIONS");
-        response.setHeader("Access-Control-Allow-Headers", "Authorization, Content-Type, Accept, X-Requested-With, remember-me");
-        response.setHeader("Access-Control-Allow-Credentials", "true");
+        setCorsAndCspHeaders(request, response, shopName);
 
         AuthorizedClient client = getClientFromShopName(shopName);
         if (client == null) {
@@ -247,7 +243,7 @@ public class DemoEmbeddedAppController {
             responseObj.setShopName(shopName);
             return ResponseEntity.ok(responseObj);
         } else {
-            // This is the case where the app has been isntalled and authorized. We will return the scopes and shop name.
+            // This is the case where the app has been installed and authorized. We will return the scopes and shop name.
             model.addAttribute("shopName", client.getPrincipalName());
             AuthCheckResponse responseObj = new AuthCheckResponse();
             responseObj.setScopes(shopifyScopes);
@@ -255,5 +251,48 @@ public class DemoEmbeddedAppController {
             responseObj.setShopName(client.getPrincipalName());
             return ResponseEntity.ok(responseObj);
         }
+    }
+
+    /**
+     * Sets proper CORS and CSP headers for embedded app responses.
+     * Uses dynamic origin handling based on the request's Origin header.
+     *
+     * @param request the HTTP request
+     * @param response the HTTP response
+     * @param shopName the shop name for CSP frame-ancestors
+     */
+    private void setCorsAndCspHeaders(HttpServletRequest request, HttpServletResponse response, String shopName) {
+        // Set CSP frame-ancestors to allow embedding in Shopify admin and the shop's domain
+        if (shopName != null && !shopName.isEmpty()) {
+            response.setHeader("Content-Security-Policy", "frame-ancestors https://" + shopName + " https://admin.shopify.com;");
+        } else {
+            response.setHeader("Content-Security-Policy", "frame-ancestors https://admin.shopify.com;");
+        }
+
+        // CORS: Access-Control-Allow-Origin must be a single origin or *
+        // Only set credentials for explicitly allowed origins
+        String requestOrigin = request.getHeader("Origin");
+        String allowedOrigin = null;
+        boolean originAllowed = false;
+
+        if (requestOrigin != null) {
+            // Allow requests from Shopify admin or the configured app hostname
+            if (requestOrigin.equals(SHOPIFY_ADMIN_ORIGIN)) {
+                allowedOrigin = SHOPIFY_ADMIN_ORIGIN;
+                originAllowed = true;
+            } else if (appHostname != null && !appHostname.isEmpty() && requestOrigin.equals(appHostname)) {
+                allowedOrigin = appHostname;
+                originAllowed = true;
+            }
+            log.debug("Request Origin: {}, Allowed Origin: {}, Allowed: {}", requestOrigin, allowedOrigin, originAllowed);
+        }
+
+        if (originAllowed && allowedOrigin != null) {
+            response.setHeader("Access-Control-Allow-Origin", allowedOrigin);
+            response.setHeader("Access-Control-Allow-Methods", "GET, POST, PUT, DELETE, OPTIONS");
+            response.setHeader("Access-Control-Allow-Headers", "Authorization, Content-Type, Accept, X-Requested-With, remember-me");
+            response.setHeader("Access-Control-Allow-Credentials", "true");
+        }
+        // For disallowed or missing origins, omit CORS headers entirely (per CORS spec)
     }
 }

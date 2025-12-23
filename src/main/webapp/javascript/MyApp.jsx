@@ -1,12 +1,11 @@
-import React from 'react';
+import React, { useEffect, useState } from 'react';
 import ReactDOM from 'react-dom';
 import { Provider, TitleBar } from '@shopify/app-bridge-react';
 import enTranslations from '@shopify/polaris/locales/en.json';
-import { AppProvider, Page, Card, Button, EmptyState } from '@shopify/polaris';
+import { AppProvider, Page, Card, EmptyState, Spinner } from '@shopify/polaris';
 import { getSessionToken } from "@shopify/app-bridge-utils";
 import { authenticatedFetch } from "@shopify/app-bridge-utils";
 import createApp from "@shopify/app-bridge";
-import { regeneratorRuntime } from "regenerator-runtime"
 import { Redirect } from '@shopify/app-bridge/actions';
 
 
@@ -20,34 +19,118 @@ function getP(n, url = window.location.href) {
     return decodeURIComponent(res[2].replace(/\+/g, ' '));
 }
 
-var host = getP('host');
+// Get host parameter from URL (Base64 encoded shop info from Shopify)
+const host = new URLSearchParams(location.search).get("host");
 
-const appApiHostname = 'https://shopifytest.ngrok.io';
+// Get app hostname from the current page origin, or use a configured value
+// In production, this should be set via server-side templating or environment config
+const appApiHostname = window.SHOPIFY_APP_HOSTNAME || window.location.origin;
 
 console.log('host: ' + host);
+console.log('appApiHostname: ' + appApiHostname);
+
+// Get API key - must be injected by the server
+const apiKey = window.SHOPIFY_API_KEY;
+
+if (!apiKey) {
+    console.error(
+        "SHOPIFY_API_KEY must be set by the server on window.SHOPIFY_API_KEY. " +
+        "Configure this in your server-side template (e.g., dash-embedded.html) by adding: " +
+        "<script>window.SHOPIFY_API_KEY = 'your-api-key';</script>"
+    );
+}
 
 const config = {
-    apiKey: 'aeb97ee2e4b822c6664812bd902d3264',
-    // host: host,
-    host: new URLSearchParams(location.search).get("host"),
+    apiKey: apiKey || '',
+    host: host,
     forceRedirect: true
 };
 
 console.log('about to call createApp()');
-const app = createApp(config);
-console.log('app created')
+// Only create app if we have required config
+const app = apiKey && host ? createApp(config) : null;
+if (app) {
+    console.log('app created');
+} else {
+    console.warn('App Bridge not initialized - missing apiKey or host');
+}
 
 function MyApp() {
-    console.log('MyApp called');
-    authCheck();
-    var token = getSessionToken(app);
-    token.then(value => {
-        console.log("token: " + value);
-        window.sessionToken = value;
+    const [isAuthenticated, setIsAuthenticated] = useState(null); // null = checking, true = authenticated, false = not authenticated
+    const [isLoading, setIsLoading] = useState(true);
+    const [authError, setAuthError] = useState(null);
 
-        loadProductList();
-    });
-    keepRetrievingToken(app);
+    useEffect(() => {
+        // Perform auth check on component mount
+        // Note: 'app' is stable (created once at module load), so empty deps array is correct
+        const initializeApp = async () => {
+            if (!app) {
+                setAuthError("App configuration missing. Please ensure SHOPIFY_API_KEY is set.");
+                setIsLoading(false);
+                return;
+            }
+
+            try {
+                // First check authentication status
+                const authResult = await authCheck();
+
+                if (authResult.authenticated) {
+                    setIsAuthenticated(true);
+                    // Only proceed with token retrieval if authenticated
+                    const token = await getSessionToken(app);
+                    console.log("token: " + token);
+                    window.sessionToken = token;
+                    loadProductList();
+                    keepRetrievingToken(app);
+                } else {
+                    setIsAuthenticated(false);
+                    // Auth check will handle redirect
+                }
+            } catch (error) {
+                console.error("Error during app initialization:", error);
+                setAuthError(error.message || "Authentication failed");
+                setIsAuthenticated(false);
+            } finally {
+                setIsLoading(false);
+            }
+        };
+
+        initializeApp();
+    }, []);
+
+    if (isLoading) {
+        return (
+            <Provider config={config}>
+                <AppProvider i18n={enTranslations}>
+                    <div style={{ display: 'flex', justifyContent: 'center', alignItems: 'center', height: '100vh' }}>
+                        <Spinner accessibilityLabel="Loading" size="large" />
+                    </div>
+                </AppProvider>
+            </Provider>
+        );
+    }
+
+    if (isAuthenticated === false || authError) {
+        return (
+            <Provider config={config}>
+                <AppProvider i18n={enTranslations}>
+                    <Page>
+                        <Card>
+                            <EmptyState
+                                heading="Authentication required"
+                                action={{ content: 'Reload page', onAction: () => window.location.reload() }}
+                                footerContent={authError || "You are being redirected for authentication. If nothing happens, try reloading the page."}
+                            >
+                                <p>
+                                    We could not verify your authentication status. You may need to re-open this app from your Shopify admin.
+                                </p>
+                            </EmptyState>
+                        </Card>
+                    </Page>
+                </AppProvider>
+            </Provider>
+        );
+    }
 
     return (
         <Provider config={config}>
@@ -126,50 +209,67 @@ function loadProductList() {
         .catch(error => console.error(error));
 }
 
-function authCheck() {
+/**
+ * Checks if the app is authenticated for the current shop.
+ * Returns a promise that resolves with the authentication status.
+ * If not authenticated, initiates the OAuth redirect flow.
+ *
+ * @returns {Promise<{authenticated: boolean, shopName?: string}>}
+ */
+async function authCheck() {
     console.log('authCheck called');
     const url = appApiHostname + "/embedded-auth-check";
-    fetch(url, {
-        method: 'GET', // *GET, POST, PUT, DELETE, etc.
-        //mode: 'cors', // no-cors, *cors, same-origin
-        cache: 'no-cache', // *default, no-cache, reload, force-cache, only-if-cached
-        //credentials: 'same-origin', // include, *same-origin, omit
-        headers: {
-            'Content-Type': 'application/json',
-            //'Authorization': window.sessionToken
-            'Authorization': host
-            // 'Content-Type': 'application/x-www-form-urlencoded',
-        },
-        redirect: 'follow', // manual, *follow, error
-        referrerPolicy: 'no-referrer', // no-referrer, *no-referrer-when-downgrade, origin, origin-when-cross-origin, same-origin, strict-origin, strict-origin-when-cross-origin, unsafe-url
 
-    }).then(response => response.json())
-        .then(
-            data => {
-                console.log("authCheck data: ", data);
-                if (data.AuthCheckResponse.authenticated) {
-                    console.log("authCheck success");
-                } else {
-                    console.log("authCheck failed");
-                    const shopName = data.AuthCheckResponse.shopName;
-                    const scopes = data.AuthCheckResponse.scopes;
-                    const apiKey = config.apiKey;
-                    const redirectUri = appApiHostname + "/oauth2/authorization/shopify";
+    try {
+        const response = await fetch(url, {
+            method: 'GET',
+            cache: 'no-cache',
+            headers: {
+                'Content-Type': 'application/json',
+                // Pass the host parameter for shop identification
+                'Authorization': host || ''
+            },
+            redirect: 'follow',
+            referrerPolicy: 'no-referrer',
+        });
 
-                    const permissionUrl = `https://${shopName}/admin/oauth/authorize?client_id=${apiKey}&scope=${scopes}&redirect_uri=${redirectUri}`;
+        if (!response.ok) {
+            throw new Error(`HTTP error! status: ${response.status}`);
+        }
 
-                    console.log("Redirecting to: " + permissionUrl);
-                    // window.location.href = data.AuthCheckResponse.authRedirectURL;
-                    // If the current window is the 'parent', change the URL by setting location.href
-                    if (window.top == window.self) {
-                        window.location.assign(permissionUrl);
+        const data = await response.json();
+        console.log("authCheck data: ", data);
 
-                        // If the current window is the 'child', change the parent's URL with Shopify App Bridge's Redirect action
-                    } else {
-                        Redirect.create(app).dispatch(Redirect.Action.REMOTE, permissionUrl);
-                    }
-                }
+        // Handle the response - it may be wrapped in AuthCheckResponse or not
+        const authData = data.AuthCheckResponse || data;
+
+        if (authData.authenticated) {
+            console.log("authCheck success - app is authenticated");
+            return { authenticated: true, shopName: authData.shopName };
+        } else {
+            console.log("authCheck: app not authenticated, initiating OAuth flow");
+            const shopName = authData.shopName;
+            const scopes = authData.scopes;
+            const redirectUri = appApiHostname + "/login/oauth2/code/shopify";
+
+            // Build the OAuth permission URL
+            const permissionUrl = `https://${shopName}/admin/oauth/authorize?client_id=${apiKey}&scope=${scopes}&redirect_uri=${encodeURIComponent(redirectUri)}`;
+
+            console.log("Redirecting to: " + permissionUrl);
+
+            // Handle redirect based on whether we're in an iframe or not
+            if (window.top === window.self) {
+                // Top-level window - direct redirect
+                window.location.assign(permissionUrl);
+            } else {
+                // Embedded in iframe - use App Bridge Redirect
+                Redirect.create(app).dispatch(Redirect.Action.REMOTE, permissionUrl);
             }
-        )
-        .catch(error => console.error(error));
+
+            return { authenticated: false, shopName: shopName };
+        }
+    } catch (error) {
+        console.error("authCheck error:", error);
+        throw error;
+    }
 }

@@ -287,15 +287,12 @@ public class DemoEmbeddedAppController {
             log.debug("Request Origin: {}, Allowed Origin: {}, Allowed: {}", requestOrigin, allowedOrigin, originAllowed);
         }
 
-        response.setHeader("Access-Control-Allow-Methods", "GET, POST, PUT, DELETE, OPTIONS");
-        response.setHeader("Access-Control-Allow-Headers", "Authorization, Content-Type, Accept, X-Requested-With, remember-me");
-
         if (originAllowed && allowedOrigin != null) {
             response.setHeader("Access-Control-Allow-Origin", allowedOrigin);
+            response.setHeader("Access-Control-Allow-Methods", "GET, POST, PUT, DELETE, OPTIONS");
+            response.setHeader("Access-Control-Allow-Headers", "Authorization, Content-Type, Accept, X-Requested-With, remember-me");
             response.setHeader("Access-Control-Allow-Credentials", "true");
-        } else {
-            // For disallowed or missing origins, don't reflect origin and disallow credentials
-            response.setHeader("Access-Control-Allow-Credentials", "false");
         }
+        // For disallowed or missing origins, omit CORS headers entirely (per CORS spec)
     }
 }

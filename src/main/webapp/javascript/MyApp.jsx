@@ -6,7 +6,6 @@ import { AppProvider, Page, Card, EmptyState, Spinner } from '@shopify/polaris';
 import { getSessionToken } from "@shopify/app-bridge-utils";
 import { authenticatedFetch } from "@shopify/app-bridge-utils";
 import createApp from "@shopify/app-bridge";
-import { regeneratorRuntime } from "regenerator-runtime";
 import { Redirect } from '@shopify/app-bridge/actions';
 
 
@@ -34,7 +33,11 @@ console.log('appApiHostname: ' + appApiHostname);
 const apiKey = window.SHOPIFY_API_KEY;
 
 if (!apiKey) {
-    console.error("SHOPIFY_API_KEY must be set by the server (window.SHOPIFY_API_KEY)");
+    console.error(
+        "SHOPIFY_API_KEY must be set by the server on window.SHOPIFY_API_KEY. " +
+        "Configure this in your server-side template (e.g., dash-embedded.html) by adding: " +
+        "<script>window.SHOPIFY_API_KEY = 'your-api-key';</script>"
+    );
 }
 
 const config = {

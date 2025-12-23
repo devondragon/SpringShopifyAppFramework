@@ -270,23 +270,32 @@ public class DemoEmbeddedAppController {
         }
 
         // CORS: Access-Control-Allow-Origin must be a single origin or *
-        // We'll use the Origin header from the request if it's an allowed origin
+        // Only set credentials for explicitly allowed origins
         String requestOrigin = request.getHeader("Origin");
-        String allowedOrigin = SHOPIFY_ADMIN_ORIGIN; // Default to Shopify admin
+        String allowedOrigin = null;
+        boolean originAllowed = false;
 
         if (requestOrigin != null) {
             // Allow requests from Shopify admin or the configured app hostname
             if (requestOrigin.equals(SHOPIFY_ADMIN_ORIGIN)) {
                 allowedOrigin = SHOPIFY_ADMIN_ORIGIN;
+                originAllowed = true;
             } else if (appHostname != null && !appHostname.isEmpty() && requestOrigin.equals(appHostname)) {
                 allowedOrigin = appHostname;
+                originAllowed = true;
             }
-            log.debug("Request Origin: {}, Allowed Origin: {}", requestOrigin, allowedOrigin);
+            log.debug("Request Origin: {}, Allowed Origin: {}, Allowed: {}", requestOrigin, allowedOrigin, originAllowed);
         }
 
-        response.setHeader("Access-Control-Allow-Origin", allowedOrigin);
         response.setHeader("Access-Control-Allow-Methods", "GET, POST, PUT, DELETE, OPTIONS");
         response.setHeader("Access-Control-Allow-Headers", "Authorization, Content-Type, Accept, X-Requested-With, remember-me");
-        response.setHeader("Access-Control-Allow-Credentials", "true");
+
+        if (originAllowed && allowedOrigin != null) {
+            response.setHeader("Access-Control-Allow-Origin", allowedOrigin);
+            response.setHeader("Access-Control-Allow-Credentials", "true");
+        } else {
+            // For disallowed or missing origins, don't reflect origin and disallow credentials
+            response.setHeader("Access-Control-Allow-Credentials", "false");
+        }
     }
 }

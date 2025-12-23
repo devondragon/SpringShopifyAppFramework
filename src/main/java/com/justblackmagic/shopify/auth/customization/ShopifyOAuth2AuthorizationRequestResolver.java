@@ -1,6 +1,5 @@
 package com.justblackmagic.shopify.auth.customization;
 
-import java.util.Base64;
 import java.util.HashMap;
 import java.util.Map;
 import org.springframework.security.core.context.SecurityContextHolder;
@@ -11,6 +10,7 @@ import org.springframework.security.oauth2.client.web.DefaultOAuth2Authorization
 import org.springframework.security.oauth2.client.web.OAuth2AuthorizationRequestResolver;
 import org.springframework.security.oauth2.core.endpoint.OAuth2AuthorizationRequest;
 import com.justblackmagic.shopify.auth.util.AuthConstants;
+import com.justblackmagic.shopify.auth.util.ShopifyHostUtils;
 import jakarta.servlet.http.HttpServletRequest;
 import lombok.extern.slf4j.Slf4j;
 
@@ -170,7 +170,7 @@ public class ShopifyOAuth2AuthorizationRequestResolver implements OAuth2Authoriz
         // 4. Try Base64-encoded 'host' parameter (embedded apps)
         String host = request.getParameter("host");
         if (host != null && !host.isEmpty()) {
-            shopName = extractShopNameFromHost(host);
+            shopName = ShopifyHostUtils.extractShopNameFromHost(host);
             if (shopName != null && !shopName.isEmpty()) {
                 log.debug("shopName extracted from 'host' parameter: {}", shopName);
                 // Store in session for future requests
@@ -183,48 +183,6 @@ public class ShopifyOAuth2AuthorizationRequestResolver implements OAuth2Authoriz
 
         log.debug("Could not find shopName in any source");
         return null;
-    }
-
-    /**
-     * Extracts the shop name from a Base64-encoded host parameter.
-     * The host parameter from Shopify is Base64 encoded and contains the shop's admin URL.
-     *
-     * @param host the Base64-encoded host string
-     * @return the extracted shop name (e.g., "mystore.myshopify.com") or null if extraction fails
-     */
-    private String extractShopNameFromHost(String host) {
-        try {
-            byte[] decodedBytes = Base64.getDecoder().decode(host);
-            String decodedHost = new String(decodedBytes);
-            log.debug("Decoded host: {}", decodedHost);
-
-            String shopName = null;
-
-            if (decodedHost.contains("admin.shopify.com/store/")) {
-                // Format: admin.shopify.com/store/mystore
-                String[] parts = decodedHost.split("/store/");
-                if (parts.length > 1) {
-                    String storePart = parts[1].split("/")[0];
-                    shopName = storePart + ".myshopify.com";
-                }
-            } else if (decodedHost.contains(".myshopify.com")) {
-                // Format: mystore.myshopify.com/admin or similar
-                int startIndex = decodedHost.indexOf("://");
-                if (startIndex != -1) {
-                    decodedHost = decodedHost.substring(startIndex + 3);
-                }
-                if (decodedHost.contains("/")) {
-                    shopName = decodedHost.substring(0, decodedHost.indexOf("/"));
-                } else {
-                    shopName = decodedHost;
-                }
-            }
-
-            return shopName;
-        } catch (IllegalArgumentException e) {
-            log.warn("Failed to decode host parameter: {}", e.getMessage());
-            return null;
-        }
     }
 
 }

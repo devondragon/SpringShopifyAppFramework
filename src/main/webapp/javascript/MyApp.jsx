@@ -2,11 +2,11 @@ import React, { useEffect, useState } from 'react';
 import ReactDOM from 'react-dom';
 import { Provider, TitleBar } from '@shopify/app-bridge-react';
 import enTranslations from '@shopify/polaris/locales/en.json';
-import { AppProvider, Page, Card, Button, EmptyState, Spinner } from '@shopify/polaris';
+import { AppProvider, Page, Card, EmptyState, Spinner } from '@shopify/polaris';
 import { getSessionToken } from "@shopify/app-bridge-utils";
 import { authenticatedFetch } from "@shopify/app-bridge-utils";
 import createApp from "@shopify/app-bridge";
-import { regeneratorRuntime } from "regenerator-runtime"
+import { regeneratorRuntime } from "regenerator-runtime";
 import { Redirect } from '@shopify/app-bridge/actions';
 
 
@@ -30,26 +30,43 @@ const appApiHostname = window.SHOPIFY_APP_HOSTNAME || window.location.origin;
 console.log('host: ' + host);
 console.log('appApiHostname: ' + appApiHostname);
 
-// Get API key - in production this should be injected by the server
-const apiKey = window.SHOPIFY_API_KEY || 'YOUR_API_KEY_HERE';
+// Get API key - must be injected by the server
+const apiKey = window.SHOPIFY_API_KEY;
+
+if (!apiKey) {
+    console.error("SHOPIFY_API_KEY must be set by the server (window.SHOPIFY_API_KEY)");
+}
 
 const config = {
-    apiKey: apiKey,
+    apiKey: apiKey || '',
     host: host,
     forceRedirect: true
 };
 
 console.log('about to call createApp()');
-const app = createApp(config);
-console.log('app created')
+// Only create app if we have required config
+const app = apiKey && host ? createApp(config) : null;
+if (app) {
+    console.log('app created');
+} else {
+    console.warn('App Bridge not initialized - missing apiKey or host');
+}
 
 function MyApp() {
     const [isAuthenticated, setIsAuthenticated] = useState(null); // null = checking, true = authenticated, false = not authenticated
     const [isLoading, setIsLoading] = useState(true);
+    const [authError, setAuthError] = useState(null);
 
     useEffect(() => {
         // Perform auth check on component mount
+        // Note: 'app' is stable (created once at module load), so empty deps array is correct
         const initializeApp = async () => {
+            if (!app) {
+                setAuthError("App configuration missing. Please ensure SHOPIFY_API_KEY is set.");
+                setIsLoading(false);
+                return;
+            }
+
             try {
                 // First check authentication status
                 const authResult = await authCheck();
@@ -68,6 +85,7 @@ function MyApp() {
                 }
             } catch (error) {
                 console.error("Error during app initialization:", error);
+                setAuthError(error.message || "Authentication failed");
                 setIsAuthenticated(false);
             } finally {
                 setIsLoading(false);
@@ -84,6 +102,28 @@ function MyApp() {
                     <div style={{ display: 'flex', justifyContent: 'center', alignItems: 'center', height: '100vh' }}>
                         <Spinner accessibilityLabel="Loading" size="large" />
                     </div>
+                </AppProvider>
+            </Provider>
+        );
+    }
+
+    if (isAuthenticated === false || authError) {
+        return (
+            <Provider config={config}>
+                <AppProvider i18n={enTranslations}>
+                    <Page>
+                        <Card>
+                            <EmptyState
+                                heading="Authentication required"
+                                action={{ content: 'Reload page', onAction: () => window.location.reload() }}
+                                footerContent={authError || "You are being redirected for authentication. If nothing happens, try reloading the page."}
+                            >
+                                <p>
+                                    We could not verify your authentication status. You may need to re-open this app from your Shopify admin.
+                                </p>
+                            </EmptyState>
+                        </Card>
+                    </Page>
                 </AppProvider>
             </Provider>
         );

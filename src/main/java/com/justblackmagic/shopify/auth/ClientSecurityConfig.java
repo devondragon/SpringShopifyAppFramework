@@ -5,8 +5,10 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.security.config.Customizer;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
+import org.springframework.security.web.header.writers.ReferrerPolicyHeaderWriter;
 import org.springframework.security.oauth2.client.OAuth2AuthorizedClientService;
 import org.springframework.security.oauth2.client.endpoint.OAuth2AccessTokenResponseClient;
 import org.springframework.security.oauth2.client.endpoint.OAuth2AuthorizationCodeGrantRequest;
@@ -18,6 +20,7 @@ import org.springframework.security.oauth2.client.web.reactive.function.client.S
 import org.springframework.security.oauth2.core.user.OAuth2User;
 import org.springframework.security.web.SecurityFilterChain;
 import org.springframework.security.web.authentication.AuthenticationSuccessHandler;
+import org.springframework.security.web.csrf.CookieCsrfTokenRepository;
 import org.springframework.web.reactive.function.client.WebClient;
 import com.justblackmagic.shopify.auth.customization.ShopifyOAuth2AuthorizationRequestResolver;
 import com.justblackmagic.shopify.auth.customization.ShopifyOAuthAuthenticationSuccessHandler;
@@ -59,7 +62,30 @@ public class ClientSecurityConfig {
 				.userInfoEndpoint(userInfo -> userInfo.userService(getUserService()))));
 
 		http.logout((logout) -> logout.logoutSuccessUrl("/"));
-		http.csrf((csrf) -> csrf.disable());
+
+		// Enable CSRF protection with explicit exceptions for webhooks and OAuth endpoints
+		// withHttpOnlyFalse() allows JavaScript (React app) to read the token
+		http.csrf((csrf) -> csrf
+				.ignoringRequestMatchers(
+						"/webhook/uninstall",
+						"/webhook/gdpr/customer-delete",
+						"/webhook/gdpr/data-request",
+						"/webhook/gdpr/shop-delete",
+						"/oauth2/**",
+						"/login/oauth2/**")
+				.csrfTokenRepository(CookieCsrfTokenRepository.withHttpOnlyFalse()));
+
+		// Configure security headers
+		// Note: X-Frame-Options is NOT set as it conflicts with embedded app's CSP frame-ancestors
+		http.headers(headers -> headers
+				.contentTypeOptions(Customizer.withDefaults())  // X-Content-Type-Options: nosniff
+				.xssProtection(Customizer.withDefaults())  // X-XSS-Protection: 1; mode=block
+				.httpStrictTransportSecurity(hsts -> hsts  // Only set when served over HTTPS
+						.includeSubDomains(true)
+						.maxAgeInSeconds(31536000))
+				.referrerPolicy(referrer -> referrer
+						.policy(ReferrerPolicyHeaderWriter.ReferrerPolicy.STRICT_ORIGIN_WHEN_CROSS_ORIGIN)));
+
 		return http.build();
 	}
 

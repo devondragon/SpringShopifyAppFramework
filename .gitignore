@@ -289,3 +289,6 @@ gradle-app.setting
 # End of https://www.toptal.com/developers/gitignore/api/java,node,react,gradle,visualstudiocode,eclipse
 
 src/main/resources/application-local.yml
+
+# Claude Code local settings
+.claude/

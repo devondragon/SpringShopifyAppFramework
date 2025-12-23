@@ -48,7 +48,8 @@ spring:
       ddl-auto: update
     properties:
       hibernate:
-        dialect: org.hibernate.dialect.MariaDB103Dialect
+        # dialect is now auto-detected by Hibernate 7 - no need to specify explicitly
+        # dialect: org.hibernate.dialect.MariaDBDialect
     show-sql: false
   messages:
     basename: messages/messages

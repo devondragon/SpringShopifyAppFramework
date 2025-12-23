@@ -2,14 +2,14 @@ package com.justblackmagic.shopify.api.rest.model;
 
 import java.util.List;
 
-import org.joda.time.DateTime;
+import java.time.ZonedDateTime;
 
 public class ShopifyOrderCreationRequest {
 
 	private final ShopifyOrder request;
 
 	public static interface ProcessedAtStep {
-		NameStep withProcessedAt(final DateTime processedAt);
+		NameStep withProcessedAt(final ZonedDateTime processedAt);
 	}
 
 	public static interface NameStep {
@@ -102,7 +102,7 @@ public class ShopifyOrderCreationRequest {
 		}
 
 		@Override
-		public NameStep withProcessedAt(final DateTime processedAt) {
+		public NameStep withProcessedAt(final ZonedDateTime processedAt) {
 			request.setProcessedAt(processedAt);
 			return this;
 		}

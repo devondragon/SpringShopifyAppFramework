@@ -2,7 +2,7 @@ package com.justblackmagic.shopify.api.rest.model;
 
 import com.fasterxml.jackson.annotation.JsonAnySetter;
 import com.fasterxml.jackson.annotation.JsonProperty;
-import org.joda.time.DateTime;
+import java.time.ZonedDateTime;
 import lombok.Data;
 import lombok.extern.slf4j.Slf4j;
 
@@ -28,10 +28,10 @@ public class ShopifyCustomCollection {
 	private String templateSuffix;
 
 	@JsonProperty("published_at")
-	private DateTime publishedAt;
+	private ZonedDateTime publishedAt;
 
 	@JsonProperty("updated_at")
-	private DateTime updatedAt;
+	private ZonedDateTime updatedAt;
 
 	@JsonProperty("admin_graphql_api_id")
 	private String adminGraphqlApiId;

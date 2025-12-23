@@ -2,7 +2,7 @@ package com.justblackmagic.shopify.api.rest.model;
 
 import java.util.List;
 import com.fasterxml.jackson.annotation.JsonAnySetter;
-import org.joda.time.DateTime;
+import java.time.ZonedDateTime;
 import lombok.Data;
 import lombok.extern.slf4j.Slf4j;
 
@@ -13,8 +13,8 @@ public class ShopifyGetCustomersRequest {
 	private List<String> ids;
 	private String sinceId;
 	private String pageInfo;
-	private DateTime createdAtMin;
-	private DateTime createdAtMax;
+	private ZonedDateTime createdAtMin;
+	private ZonedDateTime createdAtMax;
 
 	public static interface OptionalsStep {
 
@@ -26,9 +26,9 @@ public class ShopifyGetCustomersRequest {
 
 		OptionalsStep withSinceId(String sinceId);
 
-		OptionalsStep withCreatedAtMin(DateTime createdAtMin);
+		OptionalsStep withCreatedAtMin(ZonedDateTime createdAtMin);
 
-		OptionalsStep withCreatedAtMax(DateTime createdAtMax);
+		OptionalsStep withCreatedAtMax(ZonedDateTime createdAtMax);
 
 		ShopifyGetCustomersRequest build();
 	}
@@ -55,8 +55,8 @@ public class ShopifyGetCustomersRequest {
 		private String pageInfo;
 		private List<String> ids;
 		private String sinceId;
-		private DateTime createdAtMin;
-		private DateTime createdAtMax;
+		private ZonedDateTime createdAtMin;
+		private ZonedDateTime createdAtMax;
 
 		@Override
 		public ShopifyGetCustomersRequest build() {
@@ -82,13 +82,13 @@ public class ShopifyGetCustomersRequest {
 		}
 
 		@Override
-		public OptionalsStep withCreatedAtMin(final DateTime createdAtMin) {
+		public OptionalsStep withCreatedAtMin(final ZonedDateTime createdAtMin) {
 			this.createdAtMin = createdAtMin;
 			return this;
 		}
 
 		@Override
-		public OptionalsStep withCreatedAtMax(final DateTime createdAtMax) {
+		public OptionalsStep withCreatedAtMax(final ZonedDateTime createdAtMax) {
 			this.createdAtMax = createdAtMax;
 			return this;
 		}

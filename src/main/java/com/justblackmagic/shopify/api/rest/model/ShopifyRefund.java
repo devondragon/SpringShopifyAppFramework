@@ -9,7 +9,7 @@ import com.fasterxml.jackson.databind.annotation.JsonDeserialize;
 import com.fasterxml.jackson.databind.annotation.JsonSerialize;
 import com.justblackmagic.shopify.api.rest.model.serializer.CurrencyDeserializer;
 import com.justblackmagic.shopify.api.rest.model.serializer.CurrencySerializer;
-import org.joda.time.DateTime;
+import java.time.ZonedDateTime;
 import lombok.Data;
 import lombok.extern.slf4j.Slf4j;
 
@@ -21,12 +21,12 @@ public class ShopifyRefund {
 	@JsonProperty("order_id")
 	private String orderId;
 	@JsonProperty("created_at")
-	private DateTime createdAt;
+	private ZonedDateTime createdAt;
 	private String note;
 	@JsonProperty("user_id")
 	private String userId;
 	@JsonProperty("processed_at")
-	private DateTime processedAt;
+	private ZonedDateTime processedAt;
 	@JsonProperty("refund_line_items")
 	private List<ShopifyRefundLineItem> refundLineItems;
 	private ShopifyRefundShippingDetails shipping;

@@ -3,7 +3,7 @@ package com.justblackmagic.shopify.api.rest.model;
 import java.math.BigDecimal;
 import com.fasterxml.jackson.annotation.JsonAnySetter;
 import com.fasterxml.jackson.annotation.JsonProperty;
-import org.joda.time.DateTime;
+import java.time.ZonedDateTime;
 import lombok.Data;
 import lombok.extern.slf4j.Slf4j;
 
@@ -16,11 +16,9 @@ public class ShopifyCustomer {
 	@JsonProperty("accepts_marketing")
 	private boolean acceptsMarketing;
 	@JsonProperty("created_at")
-
-	private DateTime createdAt;
+	private ZonedDateTime createdAt;
 	@JsonProperty("updated_at")
-
-	private DateTime updatedAt;
+	private ZonedDateTime updatedAt;
 	@JsonProperty("first_name")
 	private String firstName;
 	@JsonProperty("last_name")

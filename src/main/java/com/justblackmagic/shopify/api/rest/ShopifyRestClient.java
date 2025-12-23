@@ -13,7 +13,7 @@ import org.apache.commons.lang3.StringUtils;
 import org.glassfish.jersey.client.ClientProperties;
 import org.glassfish.jersey.jackson.JacksonFeature;
 import org.glassfish.jersey.jackson.internal.jackson.jaxrs.json.JacksonJaxbJsonProvider;
-import org.joda.time.DateTime;
+import java.time.ZonedDateTime;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.github.rholder.retry.Attempt;
 import com.github.rholder.retry.RetryException;
@@ -732,7 +732,7 @@ public class ShopifyRestClient {
 	 * @param mininumCreationDate
 	 * @return ShopifyPage<ShopifyOrder>
 	 */
-	public ShopifyPage<ShopifyOrder> getOrders(final DateTime mininumCreationDate) {
+	public ShopifyPage<ShopifyOrder> getOrders(final ZonedDateTime mininumCreationDate) {
 		return getOrders(mininumCreationDate, DEFAULT_REQUEST_LIMIT);
 	}
 
@@ -742,7 +742,7 @@ public class ShopifyRestClient {
 	 * @param pageSize
 	 * @return ShopifyPage<ShopifyOrder>
 	 */
-	public ShopifyPage<ShopifyOrder> getOrders(final DateTime mininumCreationDate, final int pageSize) {
+	public ShopifyPage<ShopifyOrder> getOrders(final ZonedDateTime mininumCreationDate, final int pageSize) {
 		final Response response = get(buildOrdersEndpoint().queryParam(STATUS_QUERY_PARAMETER, ANY_STATUSES)
 				.queryParam(LIMIT_QUERY_PARAMETER, pageSize).queryParam(CREATED_AT_MIN_QUERY_PARAMETER, mininumCreationDate.toString()));
 		return getOrders(response);
@@ -754,7 +754,7 @@ public class ShopifyRestClient {
 	 * @param maximumCreationDate
 	 * @return ShopifyPage<ShopifyOrder>
 	 */
-	public ShopifyPage<ShopifyOrder> getOrders(final DateTime mininumCreationDate, final DateTime maximumCreationDate) {
+	public ShopifyPage<ShopifyOrder> getOrders(final ZonedDateTime mininumCreationDate, final ZonedDateTime maximumCreationDate) {
 		return getOrders(mininumCreationDate, maximumCreationDate, DEFAULT_REQUEST_LIMIT);
 	}
 
@@ -766,8 +766,8 @@ public class ShopifyRestClient {
 	 * @param pageSize
 	 * @return ShopifyPage<ShopifyOrder>
 	 */
-	public ShopifyPage<ShopifyOrder> getUpdatedOrdersCreatedBefore(final DateTime minimumUpdatedAtDate, final DateTime maximumUpdatedAtDate,
-			final DateTime maximumCreatedAtDate, final int pageSize) {
+	public ShopifyPage<ShopifyOrder> getUpdatedOrdersCreatedBefore(final ZonedDateTime minimumUpdatedAtDate, final ZonedDateTime maximumUpdatedAtDate,
+			final ZonedDateTime maximumCreatedAtDate, final int pageSize) {
 		final Response response = get(buildOrdersEndpoint().queryParam(STATUS_QUERY_PARAMETER, ANY_STATUSES)
 				.queryParam(LIMIT_QUERY_PARAMETER, pageSize).queryParam(UPDATED_AT_MIN_QUERY_PARAMETER, minimumUpdatedAtDate.toString())
 				.queryParam(UPDATED_AT_MAX_QUERY_PARAMETER, maximumUpdatedAtDate.toString())
@@ -782,7 +782,7 @@ public class ShopifyRestClient {
 	 * @param pageSize
 	 * @return ShopifyPage<ShopifyOrder>
 	 */
-	public ShopifyPage<ShopifyOrder> getOrders(final DateTime mininumCreationDate, final DateTime maximumCreationDate, final int pageSize) {
+	public ShopifyPage<ShopifyOrder> getOrders(final ZonedDateTime mininumCreationDate, final ZonedDateTime maximumCreationDate, final int pageSize) {
 		final Response response = get(buildOrdersEndpoint().queryParam(STATUS_QUERY_PARAMETER, ANY_STATUSES)
 				.queryParam(LIMIT_QUERY_PARAMETER, pageSize).queryParam(CREATED_AT_MIN_QUERY_PARAMETER, mininumCreationDate.toString())
 				.queryParam(CREATED_AT_MAX_QUERY_PARAMETER, maximumCreationDate.toString()));
@@ -796,7 +796,7 @@ public class ShopifyRestClient {
 	 * @param appId
 	 * @return ShopifyPage<ShopifyOrder>
 	 */
-	public ShopifyPage<ShopifyOrder> getOrders(final DateTime mininumCreationDate, final DateTime maximumCreationDate, final String appId) {
+	public ShopifyPage<ShopifyOrder> getOrders(final ZonedDateTime mininumCreationDate, final ZonedDateTime maximumCreationDate, final String appId) {
 		return getOrders(mininumCreationDate, maximumCreationDate, appId, DEFAULT_REQUEST_LIMIT);
 	}
 
@@ -808,7 +808,7 @@ public class ShopifyRestClient {
 	 * @param pageSize
 	 * @return ShopifyPage<ShopifyOrder>
 	 */
-	public ShopifyPage<ShopifyOrder> getOrders(final DateTime mininumCreationDate, final DateTime maximumCreationDate, final String appId,
+	public ShopifyPage<ShopifyOrder> getOrders(final ZonedDateTime mininumCreationDate, final ZonedDateTime maximumCreationDate, final String appId,
 			final int pageSize) {
 		final Response response = get(buildOrdersEndpoint().queryParam(STATUS_QUERY_PARAMETER, ANY_STATUSES)
 				.queryParam(LIMIT_QUERY_PARAMETER, pageSize).queryParam(CREATED_AT_MIN_QUERY_PARAMETER, mininumCreationDate.toString())

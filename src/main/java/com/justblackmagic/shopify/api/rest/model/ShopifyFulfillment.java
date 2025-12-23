@@ -4,7 +4,7 @@ import java.util.LinkedList;
 import java.util.List;
 import com.fasterxml.jackson.annotation.JsonAnySetter;
 import com.fasterxml.jackson.annotation.JsonProperty;
-import org.joda.time.DateTime;
+import java.time.ZonedDateTime;
 import lombok.Data;
 import lombok.extern.slf4j.Slf4j;
 
@@ -52,11 +52,9 @@ public class ShopifyFulfillment {
 	private String orderId;
 	private String status;
 	@JsonProperty("created_at")
-
-	private DateTime createdAt;
+	private ZonedDateTime createdAt;
 	@JsonProperty("updated_at")
-
-	private DateTime updatedAt;
+	private ZonedDateTime updatedAt;
 	@JsonProperty("tracking_company")
 	private String trackingCompany;
 	@JsonProperty("tracking_number")

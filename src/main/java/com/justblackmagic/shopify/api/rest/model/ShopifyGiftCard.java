@@ -3,7 +3,7 @@ package com.justblackmagic.shopify.api.rest.model;
 import java.math.BigDecimal;
 import com.fasterxml.jackson.annotation.JsonAnySetter;
 import com.fasterxml.jackson.annotation.JsonProperty;
-import org.joda.time.DateTime;
+import java.time.ZonedDateTime;
 import lombok.Data;
 import lombok.extern.slf4j.Slf4j;
 
@@ -17,7 +17,7 @@ public class ShopifyGiftCard {
 	private String apiClientId;
 	private BigDecimal balance;
 	@JsonProperty("created_at")
-	private DateTime createdAt;
+	private ZonedDateTime createdAt;
 	@JsonProperty("initial_value")
 	private BigDecimal initialValue;
 	private String currency;
@@ -25,14 +25,11 @@ public class ShopifyGiftCard {
 	private String customerId;
 	private String code;
 	@JsonProperty("disabled_at")
-
-	private DateTime disabledAt;
+	private ZonedDateTime disabledAt;
 	@JsonProperty("expires_on")
-
-	private DateTime expiresOn;
+	private ZonedDateTime expiresOn;
 	@JsonProperty("updated_at")
-
-	private DateTime updatedAt;
+	private ZonedDateTime updatedAt;
 	@JsonProperty("last_characters")
 	private String lastCharacters;
 	@JsonProperty("line_item_id")

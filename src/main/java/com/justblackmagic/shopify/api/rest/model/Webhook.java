@@ -4,7 +4,7 @@ import com.fasterxml.jackson.annotation.JsonAnySetter;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import com.fasterxml.jackson.annotation.JsonTypeInfo;
 import com.fasterxml.jackson.annotation.JsonTypeName;
-import org.joda.time.DateTime;
+import java.time.ZonedDateTime;
 import org.springframework.data.annotation.ReadOnlyProperty;
 import lombok.Data;
 import lombok.extern.slf4j.Slf4j;
@@ -33,10 +33,10 @@ public class Webhook {
     private String apiVersion;
 
     @JsonProperty("created_at")
-    private DateTime createdAt;
+    private ZonedDateTime createdAt;
 
     @JsonProperty("updated_at")
-    private DateTime updatedAt;
+    private ZonedDateTime updatedAt;
 
 
 

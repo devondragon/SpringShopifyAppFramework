@@ -1,0 +1,45 @@
+spring:
+  datasource:
+    url: jdbc:h2:mem:testdb;DB_CLOSE_DELAY=-1;DB_CLOSE_ON_EXIT=FALSE
+    driverClassName: org.h2.Driver
+    username: sa
+    password:
+  jpa:
+    hibernate:
+      ddl-auto: create-drop
+    show-sql: true
+  security:
+    oauth2:
+      client:
+        provider:
+          shopify:
+            authorization-uri: https://shopname.myshopify.com/admin/oauth/authorize
+            token-uri: https://shopname.myshopify.com/admin/oauth/access_token
+            user-info-uri: null
+            user-name-attribute: shop
+        registration:
+          shopify:
+            authorization-grant-type: authorization_code
+            client-id: test-client-id
+            client-secret: test-client-secret
+            redirect-uri: '{baseUrl}/login/oauth2/code/{registrationId}'
+            scope: read_products
+
+shopify:
+  app:
+    hostname: https://test.example.com
+    embedded: false
+  api:
+    graphql:
+      version: 2021-10
+    rest:
+      version: 2021-10
+  test:
+    storeName: test-store.myshopify.com
+  auth:
+    client-id: test-client-id
+    client-secret: test-client-secret
+    tokenEncryptionKey: dGVzdGtleXRlc3RrZXl0ZXN0a2V5dGVzdGtleXRlc3Q=
+  security:
+    unprotectedURIs: /,/index.html,/favicon.ico,/error
+    authSuccessPage: /dash

@@ -6,7 +6,7 @@ import com.fasterxml.jackson.databind.annotation.JsonDeserialize;
 import com.fasterxml.jackson.databind.annotation.JsonSerialize;
 import com.justblackmagic.shopify.api.rest.model.serializer.MetafieldValueTypeDeserializer;
 import com.justblackmagic.shopify.api.rest.model.serializer.MetafieldValueTypeSerializer;
-import org.joda.time.DateTime;
+import java.time.ZonedDateTime;
 import lombok.Data;
 import lombok.extern.slf4j.Slf4j;
 
@@ -26,9 +26,9 @@ public class Metafield {
 	@JsonProperty("owner_resource")
 	private String ownerResource;
 	@JsonProperty("created_at")
-	private DateTime createdAt;
+	private ZonedDateTime createdAt;
 	@JsonProperty("updated_at")
-	private DateTime updatedAt;
+	private ZonedDateTime updatedAt;
 
 
 	/**

@@ -2,6 +2,7 @@ package com.justblackmagic.shopify.auth.filter;
 
 import java.io.IOException;
 import com.justblackmagic.shopify.auth.util.ShopifyHMACValidator;
+import org.springframework.util.StringUtils;
 import jakarta.servlet.Filter;
 import jakarta.servlet.FilterChain;
 import jakarta.servlet.ServletException;
@@ -27,7 +28,8 @@ import lombok.extern.slf4j.Slf4j;
 @Data
 public class HMACVerificationFilter implements Filter {
 
-    private static final String OAUTH_CALLBACK_PATH = "oauth2/code";
+    /** OAuth callback path prefix - matches Spring Security's OAuth2 login callback path */
+    private static final String OAUTH_CALLBACK_PATH_PREFIX = "/login/oauth2/code/";
 
     // Normally we'd Autowire this, but since we are using the FilterRegistrationConfig class, we have to manually inject it from there
     private ShopifyHMACValidator shopifyHMACValidator;
@@ -50,10 +52,10 @@ public class HMACVerificationFilter implements Filter {
 
         String hmacParam = httpRequest.getParameter("hmac");
         String requestUri = httpRequest.getRequestURI();
-        boolean isOAuthCallback = requestUri != null && requestUri.contains(OAUTH_CALLBACK_PATH);
+        boolean isOAuthCallback = requestUri != null && requestUri.startsWith(OAUTH_CALLBACK_PATH_PREFIX);
 
         // OAuth callbacks MUST have an HMAC parameter
-        if (isOAuthCallback && (hmacParam == null || hmacParam.isEmpty())) {
+        if (isOAuthCallback && !StringUtils.hasText(hmacParam)) {
             log.error("HMACVerificationFilter: OAuth callback missing required HMAC parameter");
             httpResponse.sendError(HttpServletResponse.SC_FORBIDDEN, "Missing HMAC signature");
             return;
@@ -61,7 +63,7 @@ public class HMACVerificationFilter implements Filter {
 
         // If no HMAC parameter present (and not OAuth callback), allow through
         // Other security mechanisms (session, Spring Security) will handle authorization
-        if (hmacParam == null || hmacParam.isEmpty()) {
+        if (!StringUtils.hasText(hmacParam)) {
             log.debug("HMACVerificationFilter: No HMAC parameter, allowing request");
             request.setAttribute("shopifyHMACValid", false);
             chain.doFilter(request, response);

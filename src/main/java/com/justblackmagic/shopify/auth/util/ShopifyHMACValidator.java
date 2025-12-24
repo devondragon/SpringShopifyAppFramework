@@ -135,12 +135,14 @@ public class ShopifyHMACValidator {
             Mac mac = Mac.getInstance(HMAC_SHA256);
             SecretKeySpec key = new SecretKeySpec(secret.getBytes(StandardCharsets.UTF_8), HMAC_SHA256);
             mac.init(key);
-            byte[] rawHmac = mac.doFinal(data.getBytes(StandardCharsets.UTF_8));
-            String calculated = HexFormat.of().formatHex(rawHmac);
+            byte[] calculatedHmacBytes = mac.doFinal(data.getBytes(StandardCharsets.UTF_8));
 
-            // Use timing-safe comparison to prevent timing attacks
-            return MessageDigest.isEqual(hmac.getBytes(StandardCharsets.UTF_8), calculated.getBytes(StandardCharsets.UTF_8));
-        } catch (NoSuchAlgorithmException | InvalidKeyException ex) {
+            // Decode the expected hex HMAC to bytes for timing-safe comparison
+            byte[] expectedHmacBytes = HexFormat.of().parseHex(hmac);
+
+            // Use timing-safe comparison on raw bytes to prevent timing attacks
+            return MessageDigest.isEqual(expectedHmacBytes, calculatedHmacBytes);
+        } catch (NoSuchAlgorithmException | InvalidKeyException | IllegalArgumentException ex) {
             log.error("Error verifying HMAC (hex)", ex);
             throw new IllegalArgumentException(ex);
         }
@@ -161,12 +163,14 @@ public class ShopifyHMACValidator {
             Mac mac = Mac.getInstance(HMAC_SHA256);
             SecretKeySpec key = new SecretKeySpec(secret.getBytes(StandardCharsets.UTF_8), HMAC_SHA256);
             mac.init(key);
-            byte[] rawHmac = mac.doFinal(data.getBytes(StandardCharsets.UTF_8));
-            String calculated = Base64.getEncoder().encodeToString(rawHmac);
+            byte[] calculatedHmacBytes = mac.doFinal(data.getBytes(StandardCharsets.UTF_8));
 
-            // Use timing-safe comparison to prevent timing attacks
-            return MessageDigest.isEqual(hmac.getBytes(StandardCharsets.UTF_8), calculated.getBytes(StandardCharsets.UTF_8));
-        } catch (NoSuchAlgorithmException | InvalidKeyException ex) {
+            // Decode the expected Base64 HMAC to bytes for timing-safe comparison
+            byte[] expectedHmacBytes = Base64.getDecoder().decode(hmac);
+
+            // Use timing-safe comparison on raw bytes to prevent timing attacks
+            return MessageDigest.isEqual(expectedHmacBytes, calculatedHmacBytes);
+        } catch (NoSuchAlgorithmException | InvalidKeyException | IllegalArgumentException ex) {
             log.error("Error verifying HMAC (base64)", ex);
             throw new IllegalArgumentException(ex);
         }

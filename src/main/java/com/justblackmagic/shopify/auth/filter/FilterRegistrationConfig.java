@@ -2,20 +2,35 @@ package com.justblackmagic.shopify.auth.filter;
 
 import com.justblackmagic.shopify.auth.util.ShopifyHMACValidator;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.boot.web.servlet.FilterRegistrationBean;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 
 /**
  * Filter registration configuration class is where we register our filters.
- * 
- * We are doing this instead of using the @Filter annotation because we want to set URL Patterns for the filters.
+ *
+ * <p>We are doing this instead of using the @Filter annotation because we want to set URL Patterns for the filters.
+ *
+ * <p>Filter execution order (lower numbers run first):
+ * <ul>
+ *   <li>-1020: RateLimitFilter - Rate limiting to prevent abuse</li>
+ *   <li>-1010: HMACVerificationFilter - HMAC signature validation</li>
+ *   <li>-1000: ShopifyShopNameFilter - Shop name extraction</li>
+ *   <li>-100 to 0: Spring Security filters (managed by Spring)</li>
+ * </ul>
  */
 @Configuration
 public class FilterRegistrationConfig {
 
     @Autowired
     private ShopifyHMACValidator shopifyHMACValidator;
+
+    @Value("${shopify.security.rateLimit.requestsPerMinute:100}")
+    private int rateLimitRequestsPerMinute;
+
+    @Value("${shopify.security.rateLimit.enabled:true}")
+    private boolean rateLimitEnabled;
 
     /**
      * Setting up the HMAC Validation Filter.
@@ -35,9 +50,9 @@ public class FilterRegistrationConfig {
 
     /**
      * Setting up the Shopify Shop Name Filter.
-     * 
+     *
      * This filter grabs the shop name from the request and sets it in the session.
-     * 
+     *
      * @return
      */
     @Bean
@@ -47,6 +62,28 @@ public class FilterRegistrationConfig {
         registrationBean.addUrlPatterns("/dash");
         registrationBean.addUrlPatterns("/dash-embedded");
         registrationBean.setOrder(-1000); // So it runs before the Spring Security OAuth2 Filter
+        return registrationBean;
+    }
+
+    /**
+     * Setting up the Rate Limit Filter.
+     *
+     * This filter limits the number of requests per minute from a single IP address
+     * to protect public endpoints from abuse.
+     *
+     * @return the filter registration bean
+     */
+    @Bean
+    public FilterRegistrationBean<RateLimitFilter> rateLimitFilter() {
+        FilterRegistrationBean<RateLimitFilter> registrationBean = new FilterRegistrationBean<>();
+        RateLimitFilter filter = new RateLimitFilter();
+        filter.setRequestsPerMinute(rateLimitRequestsPerMinute);
+        registrationBean.setFilter(filter);
+        registrationBean.setEnabled(rateLimitEnabled);
+        registrationBean.addUrlPatterns("/embedded-auth-check");
+        registrationBean.addUrlPatterns("/dash-embedded");
+        registrationBean.addUrlPatterns("/product-list");
+        registrationBean.setOrder(-1020); // Run before other filters
         return registrationBean;
     }
 }

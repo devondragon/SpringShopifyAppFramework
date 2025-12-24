@@ -20,11 +20,17 @@ import lombok.extern.slf4j.Slf4j;
  * JPA AttributeConverter for encrypting a String value using AES-GCM authenticated encryption.
  *
  * <p>This converter uses AES-GCM (Galois/Counter Mode) which provides both confidentiality
- * and authenticity. The encrypted output format is: VERSION_BYTE + IV + CIPHERTEXT + AUTH_TAG
+ * and authenticity. The encrypted output format is:
+ * <pre>
+ * MAGIC_HEADER (4 bytes "GCM1") + IV (12 bytes) + CIPHERTEXT + AUTH_TAG (16 bytes)
+ * </pre>
  *
  * <p>For backward compatibility, this converter can also decrypt legacy data that was
  * encrypted using the old AES-ECB algorithm. Legacy data is detected by the absence of
- * the version byte prefix.
+ * the magic header prefix.
+ *
+ * <p>Thread Safety: This class is thread-safe. The SecureRandom instance is thread-safe
+ * in modern Java implementations (Java 8+).
  *
  * @author justblackmagic
  */
@@ -51,6 +57,12 @@ public class CryptoConverter implements AttributeConverter<String, String> {
     /** Length of magic header */
     private static final int MAGIC_HEADER_LENGTH = GCM_MAGIC_HEADER.length;
 
+    /** Minimum length for valid GCM data: magic header + IV + auth tag (empty plaintext) */
+    private static final int MIN_GCM_DATA_LENGTH = MAGIC_HEADER_LENGTH + GCM_IV_LENGTH + (GCM_TAG_LENGTH / 8);
+
+    /** Maximum allowed encrypted data size (1 MB) to prevent memory exhaustion attacks */
+    private static final int MAX_ENCRYPTED_DATA_SIZE = 1024 * 1024;
+
     private final SecureRandom secureRandom = new SecureRandom();
 
     /**
@@ -63,7 +75,7 @@ public class CryptoConverter implements AttributeConverter<String, String> {
      * Encrypts the attribute value using AES-GCM.
      *
      * @param plaintext the plaintext to encrypt
-     * @return Base64-encoded ciphertext with version byte and IV prepended
+     * @return Base64-encoded ciphertext with magic header and IV prepended
      */
     @Override
     public String convertToDatabaseColumn(String plaintext) {
@@ -114,6 +126,11 @@ public class CryptoConverter implements AttributeConverter<String, String> {
         try {
             byte[] encryptedData = Base64.getDecoder().decode(dbData);
 
+            // Validate size to prevent memory exhaustion attacks
+            if (encryptedData.length > MAX_ENCRYPTED_DATA_SIZE) {
+                throw new IllegalArgumentException("Encrypted data exceeds maximum allowed size");
+            }
+
             // Check if this is GCM-encrypted data by looking for magic header
             if (hasGcmMagicHeader(encryptedData)) {
                 return decryptGcm(encryptedData);
@@ -121,6 +138,9 @@ public class CryptoConverter implements AttributeConverter<String, String> {
                 // Legacy ECB-encrypted data
                 return decryptLegacyEcb(encryptedData);
             }
+        } catch (IllegalArgumentException e) {
+            log.error("CryptoConverter.convertToEntityAttribute: Invalid data", e);
+            throw new RuntimeException("Decryption failed: " + e.getMessage(), e);
         } catch (Exception e) {
             log.error("CryptoConverter.convertToEntityAttribute: Decryption failed", e);
             throw new RuntimeException("Decryption failed", e);
@@ -144,8 +164,17 @@ public class CryptoConverter implements AttributeConverter<String, String> {
 
     /**
      * Decrypts data encrypted with AES-GCM.
+     *
+     * @param encryptedData the encrypted data including magic header, IV, ciphertext, and auth tag
+     * @return the decrypted plaintext
+     * @throws IllegalArgumentException if the data is too short to be valid GCM data
      */
     private String decryptGcm(byte[] encryptedData) throws Exception {
+        // Validate minimum length: magic header + IV + auth tag
+        if (encryptedData.length < MIN_GCM_DATA_LENGTH) {
+            throw new IllegalArgumentException("Invalid GCM encrypted data: too short");
+        }
+
         Key key = new SecretKeySpec(Base64.getDecoder().decode(encryptionKeyString), AES);
 
         // Extract IV and ciphertext (skip magic header)

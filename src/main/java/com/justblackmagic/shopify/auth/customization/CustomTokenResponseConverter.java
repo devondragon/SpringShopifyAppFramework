@@ -49,7 +49,7 @@ public class CustomTokenResponseConverter implements Converter<Map<String, Objec
 	}
 
 	/**
-	 * Setups up the scopes, expiration, and token type, as the Shopify OAuth response does not return these values.
+	 * Sets up the scopes, expiration, and token type, as the Shopify OAuth response does not return these values.
 	 *
 	 * @param tokenResponseParameters the token response parameters from Shopify
 	 * @return OAuth2AccessTokenResponse configured for Spring Security
@@ -76,8 +76,12 @@ public class CustomTokenResponseConverter implements Converter<Map<String, Objec
 		if (tokenResponseParameters.containsKey(OAuth2ParameterNames.EXPIRES_IN)) {
 			Object expiresInValue = tokenResponseParameters.get(OAuth2ParameterNames.EXPIRES_IN);
 			if (expiresInValue != null) {
-				expiresIn = Long.parseLong(expiresInValue.toString());
-				log.debug("Using expires_in from response: {} seconds", expiresIn);
+				try {
+					expiresIn = Long.parseLong(expiresInValue.toString());
+					log.debug("Using expires_in from response: {} seconds", expiresIn);
+				} catch (NumberFormatException e) {
+					log.warn("Invalid expires_in value in token response, using default: {} seconds", tokenExpirationSeconds);
+				}
 			}
 		}
 

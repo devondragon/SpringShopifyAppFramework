@@ -25,8 +25,8 @@ public class ShopifyRestClientService {
      * @return ShopifyRestClient
      */
     public ShopifyRestClient getShopifyRestClient(final String shopName, final String accessToken) {
-        log.debug("getShopifyRestClient called with shopName: {}", shopName);
-        log.trace("getShopifyRestClient called with accessToken: {}", accessToken);
+        log.debug("getShopifyRestClient called for shop: {}", shopName);
+        // Never log access tokens - they are sensitive credentials
         return ShopifyRestClient.newBuilder().withSubdomain(shopName).withAccessToken(accessToken).withApiVersion(apiVersion).build();
     }
 

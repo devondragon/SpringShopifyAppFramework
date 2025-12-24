@@ -47,15 +47,39 @@ public class ShopifyGraphQLClient {
     private String shopName;
     private String accessToken;
     private String apiVersion;
+    private boolean enableWiretap;
 
     private WebClient webClient;
 
+    /**
+     * Creates a new ShopifyGraphQLClient with wiretap disabled (recommended for production).
+     */
     public ShopifyGraphQLClient(String shopName, String accessToken, String apiVersion) {
+        this(shopName, accessToken, apiVersion, false);
+    }
+
+    /**
+     * Creates a new ShopifyGraphQLClient with configurable wiretap.
+     *
+     * @param shopName the Shopify shop name
+     * @param accessToken the API access token
+     * @param apiVersion the API version
+     * @param enableWiretap whether to enable HTTP wiretap logging (should be false in production)
+     */
+    public ShopifyGraphQLClient(String shopName, String accessToken, String apiVersion, boolean enableWiretap) {
         this.shopName = shopName;
         this.accessToken = accessToken;
         this.apiVersion = apiVersion;
+        this.enableWiretap = enableWiretap;
 
-        HttpClient httpClient = HttpClient.create().wiretap("reactor.netty.http.client.HttpClient", LogLevel.DEBUG, AdvancedByteBufFormat.TEXTUAL);
+        HttpClient httpClient = HttpClient.create();
+
+        // Only enable wiretap in non-production environments for debugging
+        // WARNING: Wiretap logs sensitive data including access tokens and request/response bodies
+        if (enableWiretap && log.isDebugEnabled()) {
+            log.warn("HTTP wiretap enabled - this should NOT be used in production as it logs sensitive data");
+            httpClient = httpClient.wiretap("reactor.netty.http.client.HttpClient", LogLevel.DEBUG, AdvancedByteBufFormat.TEXTUAL);
+        }
 
         this.webClient = WebClient.builder().baseUrl("https://" + shopName + "/admin/api/" + apiVersion + "/graphql.json")
                 .defaultHeader(SHOPIFY_ACCESS_TOKEN_HEADER_NAME, accessToken)

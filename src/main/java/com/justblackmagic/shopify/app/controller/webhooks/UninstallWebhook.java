@@ -11,9 +11,9 @@ import org.springframework.web.bind.annotation.RestController;
 import com.justblackmagic.shopify.auth.persistence.model.AuthorizedClient;
 import com.justblackmagic.shopify.auth.persistence.repository.JPAAuthorizedClientRepository;
 import com.justblackmagic.shopify.auth.util.ShopifyHMACValidator;
+import org.springframework.transaction.annotation.Transactional;
 import jakarta.persistence.EntityManager;
 import jakarta.servlet.http.HttpServletRequest;
-import jakarta.transaction.Transactional;
 import lombok.extern.slf4j.Slf4j;
 
 @Slf4j
@@ -31,7 +31,7 @@ public class UninstallWebhook {
         this.entityManager = entityManager;
     }
 
-    @Transactional
+    @Transactional(rollbackFor = Exception.class)
     @PostMapping(value = "/webhook/uninstall", produces = MediaType.APPLICATION_JSON_VALUE)
     public ResponseEntity<String> uninstallApp(HttpServletRequest request, @RequestBody String requestBody, @RequestParam String id) {
         log.debug("request: {}", request);

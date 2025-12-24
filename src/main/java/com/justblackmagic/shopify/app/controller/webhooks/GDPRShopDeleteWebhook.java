@@ -11,8 +11,8 @@ import org.springframework.web.bind.annotation.RestController;
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.justblackmagic.shopify.auth.util.ShopifyHMACValidator;
+import org.springframework.transaction.annotation.Transactional;
 import jakarta.servlet.http.HttpServletRequest;
-import jakarta.transaction.Transactional;
 import lombok.extern.slf4j.Slf4j;
 
 @Slf4j
@@ -27,7 +27,7 @@ public class GDPRShopDeleteWebhook {
         this.objectMapper = objectMapper;
     }
 
-    @Transactional
+    @Transactional(rollbackFor = Exception.class)
     @PostMapping(value = "/webhook/gdpr/shop-delete", produces = MediaType.APPLICATION_JSON_VALUE)
     public ResponseEntity<String> gdprShopDelete(HttpServletRequest request, @RequestBody String requestBody) {
         log.debug("request: {}", request);

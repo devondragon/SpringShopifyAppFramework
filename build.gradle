@@ -4,6 +4,7 @@ plugins {
 	id 'java'
 	id "com.github.ben-manes.versions" version "0.53.0"
 	id "com.github.node-gradle.node" version "7.1.0"
+	id 'org.owasp.dependencycheck' version '12.1.0'
 }
 
 group = 'com.justblackmagic'
@@ -98,4 +99,27 @@ bootRun {
 		def profiles = 'local'
 		environment SPRING_PROFILES_ACTIVE: profiles
 	}
+}
+
+// OWASP Dependency Check configuration
+// Run with: ./gradlew dependencyCheckAnalyze
+dependencyCheck {
+    // Fail the build if any vulnerability with CVSS score >= 7 is found
+    failBuildOnCVSS = 7.0f
+
+    // Suppress false positives using a suppressions file (create if needed)
+    if (file('dependency-check-suppressions.xml').exists()) {
+        suppressionFile = 'dependency-check-suppressions.xml'
+    }
+
+    // Output formats for reports
+    formats = ['HTML', 'JSON']
+
+    // Skip analyzing test dependencies for faster scans
+    skipTestGroups = true
+
+    // NVD API configuration (optional - for faster scans, get an API key from https://nvd.nist.gov/developers/request-an-api-key)
+    // nvd {
+    //     apiKey = System.getenv('NVD_API_KEY') ?: ''
+    // }
 }

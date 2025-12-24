@@ -27,7 +27,7 @@ public class ShopifyShopNameFilter implements Filter {
     @Override
     public void doFilter(ServletRequest request, ServletResponse response, FilterChain chain) throws IOException, ServletException {
         HttpServletRequest httpRequest = (HttpServletRequest) request;
-        String shopName = request.getParameter(AuthConstants.SHOP_ATTRIBUE_NAME);
+        String shopName = request.getParameter(AuthConstants.SHOP_ATTRIBUTE_NAME);
         log.debug("ShopName from 'shop' parameter: {}", shopName);
 
         // If shop name not found directly, try to extract from Base64-encoded 'host' parameter
@@ -41,7 +41,7 @@ public class ShopifyShopNameFilter implements Filter {
         }
 
         if (shopName != null && !shopName.isEmpty()) {
-            httpRequest.getSession().setAttribute(AuthConstants.SHOP_ATTRIBUE_NAME, shopName);
+            httpRequest.getSession().setAttribute(AuthConstants.SHOP_ATTRIBUTE_NAME, shopName);
             request.setAttribute("shopName", shopName);
             log.debug("ShopName '{}' added to session.", shopName);
         }

@@ -79,7 +79,11 @@ public class CustomRequestEntityConverter implements Converter<OAuth2Authorizati
 		ServletRequestAttributes attributes = (ServletRequestAttributes) requestAttributes;
 		HttpServletRequest httpRequest = attributes.getRequest();
 		HttpSession httpSession = httpRequest.getSession(true);
-		return httpSession.getAttribute(AuthConstants.SHOP_ATTRIBUE_NAME).toString();
+		Object shopAttribute = httpSession.getAttribute(AuthConstants.SHOP_ATTRIBUTE_NAME);
+		if (shopAttribute == null) {
+			throw new IllegalStateException("Shop name not found in session");
+		}
+		return shopAttribute.toString();
 	}
 
 }

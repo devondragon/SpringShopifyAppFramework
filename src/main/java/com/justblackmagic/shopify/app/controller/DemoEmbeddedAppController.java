@@ -1,5 +1,6 @@
 package com.justblackmagic.shopify.app.controller;
 
+import java.nio.charset.StandardCharsets;
 import java.security.Principal;
 import java.util.Base64;
 import java.util.Enumeration;
@@ -20,6 +21,7 @@ import com.justblackmagic.shopify.auth.persistence.model.AuthorizedClient;
 import com.justblackmagic.shopify.auth.persistence.repository.JPAAuthorizedClientRepository;
 import com.justblackmagic.shopify.auth.service.ShopifyStoreUser;
 import com.justblackmagic.shopify.auth.util.JWTUtil;
+import com.justblackmagic.shopify.auth.util.ShopifyValidation;
 import io.jsonwebtoken.MalformedJwtException;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
@@ -156,10 +158,15 @@ public class DemoEmbeddedAppController {
             } catch (MalformedJwtException e) {
                 // This likely means we got passed a Based64 encoded shop name instead of a JWT token
                 log.debug("MalformedJwtException. This is normal for initial auth. Going to try to get the shopname from the header value");
-                byte[] decodedBytes = Base64.getDecoder().decode(token);
-                shopName = new String(decodedBytes);
-                log.debug("host decoded to shopName: {}", shopName);
-                if (shopName != null && shopName.contains("https://")) {
+                try {
+                    byte[] decodedBytes = Base64.getDecoder().decode(token);
+                    shopName = new String(decodedBytes, StandardCharsets.UTF_8);
+                    log.debug("host decoded to shopName: {}", shopName);
+                } catch (IllegalArgumentException ex) {
+                    log.warn("Invalid Base64 encoded token: {}", ex.getMessage());
+                    return null;
+                }
+                if (shopName.contains("https://")) {
                     // Need to strip off the "https://" prefix that comes in on the header value
                     shopName = shopName.replace("https://", "");
                 }
@@ -264,7 +271,13 @@ public class DemoEmbeddedAppController {
     private void setCorsAndCspHeaders(HttpServletRequest request, HttpServletResponse response, String shopName) {
         // Set CSP frame-ancestors to allow embedding in Shopify admin and the shop's domain
         if (shopName != null && !shopName.isEmpty()) {
-            response.setHeader("Content-Security-Policy", "frame-ancestors https://" + shopName + " https://admin.shopify.com;");
+            try {
+                String sanitizedShopName = ShopifyValidation.sanitizeShopName(shopName);
+                response.setHeader("Content-Security-Policy", "frame-ancestors https://" + sanitizedShopName + " https://admin.shopify.com;");
+            } catch (IllegalArgumentException e) {
+                log.warn("Invalid shop name format", e);
+                response.setHeader("Content-Security-Policy", "frame-ancestors https://admin.shopify.com;");
+            }
         } else {
             response.setHeader("Content-Security-Policy", "frame-ancestors https://admin.shopify.com;");
         }

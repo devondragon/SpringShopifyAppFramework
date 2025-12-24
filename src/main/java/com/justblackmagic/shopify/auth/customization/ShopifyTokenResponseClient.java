@@ -138,7 +138,7 @@ public class ShopifyTokenResponseClient implements OAuth2AccessTokenResponseClie
 		ServletRequestAttributes attributes = (ServletRequestAttributes) RequestContextHolder.currentRequestAttributes();
 		HttpServletRequest httpRequest = attributes.getRequest();
 		HttpSession httpSession = httpRequest.getSession(true);
-		Object shopAttribute = httpSession.getAttribute(AuthConstants.SHOP_ATTRIBUE_NAME);
+		Object shopAttribute = httpSession.getAttribute(AuthConstants.SHOP_ATTRIBUTE_NAME);
 		if (shopAttribute == null) {
 			throw new IllegalStateException("Shop name not found in session. Ensure the OAuth flow started correctly.");
 		}

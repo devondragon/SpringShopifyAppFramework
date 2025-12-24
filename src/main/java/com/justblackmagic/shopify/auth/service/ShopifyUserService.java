@@ -32,14 +32,14 @@ public class ShopifyUserService implements OAuth2UserService<OAuth2UserRequest, 
 	@Override
 	public OAuth2User loadUser(OAuth2UserRequest userRequest) throws OAuth2AuthenticationException {
 		log.debug("ShopifyUserService.loadUser:" + "called with userRequest: " + userRequest.toString());
-		Object shopName = userRequest.getAdditionalParameters().get(AuthConstants.SHOP_ATTRIBUE_NAME);
+		Object shopName = userRequest.getAdditionalParameters().get(AuthConstants.SHOP_ATTRIBUTE_NAME);
 		// If we don't have a shop name on the request, try to get it from the session
 		if (shopName == null || !shopName.getClass().isInstance(String.class) || ((String) shopName).isEmpty()) {
 			RequestAttributes requestAttributes = RequestContextHolder.currentRequestAttributes();
 			ServletRequestAttributes attributes = (ServletRequestAttributes) requestAttributes;
 			HttpServletRequest request = attributes.getRequest();
 			HttpSession httpSession = request.getSession(true);
-			shopName = httpSession.getAttribute(AuthConstants.SHOP_ATTRIBUE_NAME);
+			shopName = httpSession.getAttribute(AuthConstants.SHOP_ATTRIBUTE_NAME);
 		}
 		log.debug("loadUser:shopName: {}", shopName);
 		String shopifyClientId = userRequest.getClientRegistration().getClientId();

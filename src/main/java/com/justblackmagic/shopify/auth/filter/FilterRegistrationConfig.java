@@ -2,6 +2,7 @@ package com.justblackmagic.shopify.auth.filter;
 
 import com.justblackmagic.shopify.auth.util.ShopifyHMACValidator;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.boot.web.servlet.FilterRegistrationBean;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
@@ -16,6 +17,12 @@ public class FilterRegistrationConfig {
 
     @Autowired
     private ShopifyHMACValidator shopifyHMACValidator;
+
+    @Value("${shopify.security.rateLimit.requestsPerMinute:100}")
+    private int rateLimitRequestsPerMinute;
+
+    @Value("${shopify.security.rateLimit.enabled:true}")
+    private boolean rateLimitEnabled;
 
     /**
      * Setting up the HMAC Validation Filter.
@@ -35,9 +42,9 @@ public class FilterRegistrationConfig {
 
     /**
      * Setting up the Shopify Shop Name Filter.
-     * 
+     *
      * This filter grabs the shop name from the request and sets it in the session.
-     * 
+     *
      * @return
      */
     @Bean
@@ -47,6 +54,28 @@ public class FilterRegistrationConfig {
         registrationBean.addUrlPatterns("/dash");
         registrationBean.addUrlPatterns("/dash-embedded");
         registrationBean.setOrder(-1000); // So it runs before the Spring Security OAuth2 Filter
+        return registrationBean;
+    }
+
+    /**
+     * Setting up the Rate Limit Filter.
+     *
+     * This filter limits the number of requests per minute from a single IP address
+     * to protect public endpoints from abuse.
+     *
+     * @return the filter registration bean
+     */
+    @Bean
+    public FilterRegistrationBean<RateLimitFilter> rateLimitFilter() {
+        FilterRegistrationBean<RateLimitFilter> registrationBean = new FilterRegistrationBean<>();
+        RateLimitFilter filter = new RateLimitFilter();
+        filter.setRequestsPerMinute(rateLimitRequestsPerMinute);
+        registrationBean.setFilter(filter);
+        registrationBean.setEnabled(rateLimitEnabled);
+        registrationBean.addUrlPatterns("/embedded-auth-check");
+        registrationBean.addUrlPatterns("/dash-embedded");
+        registrationBean.addUrlPatterns("/product-list");
+        registrationBean.setOrder(-1020); // Run before other filters
         return registrationBean;
     }
 }

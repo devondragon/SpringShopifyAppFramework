@@ -9,13 +9,14 @@ server:
     remoteip:
       protocol-header: x-forwarded-proto
       remote-ip-header: x-forwarded-for
+    max-http-form-post-size: 2MB
 
 shopify:
   api:
     graphql:
-      version: 2021-10
+      version: 2024-10
     rest:
-      version: 2021-10
+      version: 2024-10
   app:
     hostname: https://${SHOPIFY_APP_HOSTNAME}
     embedded: false  # Set this to true if your App UI should be embedded in the Shopify Admin
@@ -34,9 +35,9 @@ spring:
     name: Shopify Integration Framework
   datasource:
     driverClassName: org.mariadb.jdbc.Driver
-    password: shopifytest
-    url: jdbc:mariadb://localhost:3306/shopifytest?createDatabaseIfNotExist=true
-    username: shopifytest
+    url: jdbc:mariadb://${DB_HOST:localhost}:${DB_PORT:3306}/${DB_NAME:shopifytest}?createDatabaseIfNotExist=true
+    username: ${DB_USER:shopifytest}
+    password: ${DB_PASSWORD:shopifytest}
   devtools:
     restart:
       enabled: true
@@ -47,7 +48,7 @@ spring:
       unwrap-root-value: true
   jpa:
     hibernate:
-      ddl-auto: update
+      ddl-auto: ${JPA_DDL_AUTO:update}
     properties:
       hibernate:
         # dialect is now auto-detected by Hibernate 7 - no need to specify explicitly
@@ -55,6 +56,10 @@ spring:
     show-sql: false
   messages:
     basename: messages/messages
+  servlet:
+    multipart:
+      max-file-size: 2MB
+      max-request-size: 2MB
   security:
     oauth2:
       client:

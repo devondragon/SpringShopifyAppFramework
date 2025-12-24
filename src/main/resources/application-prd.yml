@@ -1,6 +1,7 @@
 ---
 server:
   address: 127.0.0.1
+  shutdown: graceful
   servlet:
     session:
       cookie:
@@ -9,5 +10,27 @@ server:
         same-site: lax  # lax allows OAuth redirects while still preventing CSRF
 
 spring:
+  lifecycle:
+    timeout-per-shutdown-phase: 30s
+  jpa:
+    hibernate:
+      ddl-auto: validate  # Use validate in production - use migrations for schema changes
   thymeleaf:
     cache: true
+  devtools:
+    restart:
+      enabled: false
+
+management:
+  endpoints:
+    web:
+      exposure:
+        include: health,info,metrics
+  endpoint:
+    health:
+      show-details: when-authorized
+
+logging:
+  level:
+    root: INFO
+    com.justblackmagic: INFO

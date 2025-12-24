@@ -37,7 +37,7 @@ spring:
     driverClassName: org.mariadb.jdbc.Driver
     url: jdbc:mariadb://${DB_HOST:localhost}:${DB_PORT:3306}/${DB_NAME:shopifytest}?createDatabaseIfNotExist=true
     username: ${DB_USER:shopifytest}
-    password: ${DB_PASSWORD:shopifytest}
+    password: ${DB_PASSWORD}
   devtools:
     restart:
       enabled: true
@@ -48,7 +48,7 @@ spring:
       unwrap-root-value: true
   jpa:
     hibernate:
-      ddl-auto: ${JPA_DDL_AUTO:update}
+      ddl-auto: ${JPA_DDL_AUTO:validate}
     properties:
       hibernate:
         # dialect is now auto-detected by Hibernate 7 - no need to specify explicitly

@@ -9,8 +9,16 @@ import org.springframework.context.annotation.Configuration;
 
 /**
  * Filter registration configuration class is where we register our filters.
- * 
- * We are doing this instead of using the @Filter annotation because we want to set URL Patterns for the filters.
+ *
+ * <p>We are doing this instead of using the @Filter annotation because we want to set URL Patterns for the filters.
+ *
+ * <p>Filter execution order (lower numbers run first):
+ * <ul>
+ *   <li>-1020: RateLimitFilter - Rate limiting to prevent abuse</li>
+ *   <li>-1010: HMACVerificationFilter - HMAC signature validation</li>
+ *   <li>-1000: ShopifyShopNameFilter - Shop name extraction</li>
+ *   <li>-100 to 0: Spring Security filters (managed by Spring)</li>
+ * </ul>
  */
 @Configuration
 public class FilterRegistrationConfig {

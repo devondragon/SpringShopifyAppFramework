@@ -46,6 +46,7 @@ dependencies {
 	// Jackson 3 is provided by Spring Boot 4.0 - no explicit dependencies needed
 	implementation 'commons-io:commons-io:2.21.0'
 	implementation 'com.bucket4j:bucket4j_jdk17-core:8.14.0'
+	implementation 'com.github.ben-manes.caffeine:caffeine:3.1.8'
  	implementation 'io.netty:netty-resolver-dns-native-macos:4.1.98.Final:osx-aarch_64'
 
     implementation 'io.jsonwebtoken:jjwt-api:0.13.0'

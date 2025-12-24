@@ -5,7 +5,6 @@ import java.util.Collections;
 import java.util.Map;
 import java.util.Set;
 import java.util.stream.Collectors;
-import java.util.stream.Stream;
 
 import org.springframework.core.convert.converter.Converter;
 import org.springframework.security.oauth2.core.OAuth2AccessToken;
@@ -20,26 +19,44 @@ import lombok.extern.slf4j.Slf4j;
 /**
  * Custom token response converter. This class is used to customize the token response. Shopify returns the token but without expiration date or token
  * type, so to make it compatible with standard OAuth2 objects, we set up all the data here.
- * 
+ *
+ * Shopify access tokens do not expire (they are valid until the app is uninstalled), but Spring Security
+ * requires an expiration value. The default is set to 2 years but can be configured via the constructor.
+ *
  * @author justblackmagic
  */
 @Slf4j
 public class CustomTokenResponseConverter implements Converter<Map<String, Object>, OAuth2AccessTokenResponse> {
-	private static final int ONE_YEAR_IN_SECONDS = 31536000;
+	/** Default token expiration: 2 years in seconds (Shopify tokens don't actually expire) */
+	private static final long DEFAULT_TOKEN_EXPIRATION_SECONDS = 63072000L; // 2 years
 
-	private static final Set<String> TOKEN_RESPONSE_PARAMETER_NAMES = Stream.of(OAuth2ParameterNames.ACCESS_TOKEN, OAuth2ParameterNames.TOKEN_TYPE,
-			OAuth2ParameterNames.EXPIRES_IN, OAuth2ParameterNames.REFRESH_TOKEN, OAuth2ParameterNames.SCOPE).collect(Collectors.toSet());
+	private final long tokenExpirationSeconds;
 
+	/**
+	 * Creates a converter with the default token expiration (2 years).
+	 */
+	public CustomTokenResponseConverter() {
+		this(DEFAULT_TOKEN_EXPIRATION_SECONDS);
+	}
+
+	/**
+	 * Creates a converter with a custom token expiration.
+	 *
+	 * @param tokenExpirationSeconds the token expiration in seconds
+	 */
+	public CustomTokenResponseConverter(long tokenExpirationSeconds) {
+		this.tokenExpirationSeconds = tokenExpirationSeconds;
+	}
 
 	/**
 	 * Setups up the scopes, expiration, and token type, as the Shopify OAuth response does not return these values.
-	 * 
-	 * @param tokenResponseParameters
-	 * @return OAuth2AccessTokenResponse
+	 *
+	 * @param tokenResponseParameters the token response parameters from Shopify
+	 * @return OAuth2AccessTokenResponse configured for Spring Security
 	 */
 	@Override
 	public OAuth2AccessTokenResponse convert(Map<String, Object> tokenResponseParameters) {
-		log.debug("CustomTokenResponseConverter.convert:" + "tokenResponseParameters: " + tokenResponseParameters.toString());
+		log.debug("CustomTokenResponseConverter.convert: processing token response");
 
 		String accessToken = (String) tokenResponseParameters.get(OAuth2ParameterNames.ACCESS_TOKEN);
 		if (accessToken == null || accessToken.isEmpty()) {
@@ -52,8 +69,17 @@ public class CustomTokenResponseConverter implements Converter<Map<String, Objec
 			String scope = (String) tokenResponseParameters.get(OAuth2ParameterNames.SCOPE);
 			scopes = Arrays.stream(StringUtils.delimitedListToStringArray(scope, ",")).collect(Collectors.toSet());
 		}
-		// Setting the token expiration to two years from now
-		long expiresIn = Long.valueOf(ONE_YEAR_IN_SECONDS * 2);
+
+		// Use expiration from response if present, otherwise use configured default
+		// Note: Shopify tokens don't actually expire, this is for Spring Security compatibility
+		long expiresIn = tokenExpirationSeconds;
+		if (tokenResponseParameters.containsKey(OAuth2ParameterNames.EXPIRES_IN)) {
+			Object expiresInValue = tokenResponseParameters.get(OAuth2ParameterNames.EXPIRES_IN);
+			if (expiresInValue != null) {
+				expiresIn = Long.parseLong(expiresInValue.toString());
+				log.debug("Using expires_in from response: {} seconds", expiresIn);
+			}
+		}
 
 		// The token type is always "bearer"
 		OAuth2AccessToken.TokenType accessTokenType = OAuth2AccessToken.TokenType.BEARER;

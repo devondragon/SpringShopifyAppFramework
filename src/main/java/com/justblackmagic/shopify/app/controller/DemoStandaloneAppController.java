@@ -69,7 +69,7 @@ public class DemoStandaloneAppController {
                     String sanitizedShopName = ShopifyValidation.sanitizeShopName(shopName);
                     response.setHeader("Content-Security-Policy", "frame-ancestors https://" + sanitizedShopName + " https://admin.shopify.com;");
                 } catch (IllegalArgumentException e) {
-                    log.warn("Invalid shop name format: {}", shopName, e);
+                    log.warn("Invalid shop name format", e);
                     response.setHeader("Content-Security-Policy", "frame-ancestors https://admin.shopify.com;");
                 }
             }
@@ -86,7 +86,7 @@ public class DemoStandaloneAppController {
                     String sanitizedShopName = ShopifyValidation.sanitizeShopName(shopName);
                     response.setHeader("Content-Security-Policy", "frame-ancestors https://" + sanitizedShopName + " https://admin.shopify.com;");
                 } catch (IllegalArgumentException e) {
-                    log.warn("Invalid shop name format: {}", shopName, e);
+                    log.warn("Invalid shop name format", e);
                     response.setHeader("Content-Security-Policy", "frame-ancestors https://admin.shopify.com;");
                 }
             }

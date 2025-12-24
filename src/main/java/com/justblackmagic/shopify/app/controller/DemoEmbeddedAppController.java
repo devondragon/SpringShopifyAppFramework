@@ -166,7 +166,7 @@ public class DemoEmbeddedAppController {
                     log.warn("Invalid Base64 encoded token: {}", ex.getMessage());
                     return null;
                 }
-                if (shopName != null && shopName.contains("https://")) {
+                if (shopName.contains("https://")) {
                     // Need to strip off the "https://" prefix that comes in on the header value
                     shopName = shopName.replace("https://", "");
                 }
@@ -275,7 +275,7 @@ public class DemoEmbeddedAppController {
                 String sanitizedShopName = ShopifyValidation.sanitizeShopName(shopName);
                 response.setHeader("Content-Security-Policy", "frame-ancestors https://" + sanitizedShopName + " https://admin.shopify.com;");
             } catch (IllegalArgumentException e) {
-                log.warn("Invalid shop name format: {}", shopName, e);
+                log.warn("Invalid shop name format", e);
                 response.setHeader("Content-Security-Policy", "frame-ancestors https://admin.shopify.com;");
             }
         } else {

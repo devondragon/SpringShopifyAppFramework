@@ -15,9 +15,10 @@ public class ShopifyValidation {
 	 * Format: {store-name}.myshopify.com
 	 * - Must start with alphanumeric character
 	 * - Can contain lowercase letters, numbers, and hyphens
+	 * - Cannot end with a hyphen before .myshopify.com
 	 * - Must end with .myshopify.com
 	 */
-	private static final Pattern SHOP_NAME_PATTERN = Pattern.compile("^[a-z0-9][a-z0-9\\-]*\\.myshopify\\.com$");
+	private static final Pattern SHOP_NAME_PATTERN = Pattern.compile("^[a-z0-9]([a-z0-9\\-]*[a-z0-9])?\\.myshopify\\.com$");
 
 	private ShopifyValidation() {
 		// Private constructor to prevent instantiation
@@ -43,7 +44,7 @@ public class ShopifyValidation {
 	 */
 	public static String sanitizeShopName(String shopName) {
 		if (!isValidShopName(shopName)) {
-			throw new IllegalArgumentException("Invalid shop name format: " + shopName);
+			throw new IllegalArgumentException("Invalid shop name format");
 		}
 		return shopName;
 	}

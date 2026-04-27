@@ -36,7 +36,7 @@ dependencies {
 	implementation 'org.springframework.boot:spring-boot-starter-thymeleaf'
 	implementation 'org.springframework.boot:spring-boot-starter-web'
 	implementation 'org.springframework.boot:spring-boot-starter-oauth2-client'
-	implementation 'org.thymeleaf.extras:thymeleaf-extras-springsecurity6:3.1.4.RELEASE'
+	implementation 'org.thymeleaf.extras:thymeleaf-extras-springsecurity6:3.1.5.RELEASE'
 	implementation 'nz.net.ultraq.thymeleaf:thymeleaf-layout-dialect:4.0.1'
 	implementation 'org.springframework.boot:spring-boot-starter-webflux'
 	// Joda-Time removed - using java.time instead
